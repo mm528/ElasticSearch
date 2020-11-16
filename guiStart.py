@@ -1,4 +1,4 @@
-from __future__ import print_function
+`from __future__ import print_function
 from collections import UserString
 from elasticsearch.exceptions import NotFoundError
 import sys
@@ -50,7 +50,7 @@ class UI (QMainWindow):
     def on_click(self):
          self.label.setText('Connect with Elastic SEARCH! Print results') 
          print('Connect with Elastic SEARCH! Print results')
-         print('Test git')
+         print('Test git guys iam here!')
 
     def click2(self):
           print('Here i need to find a connection between the words')
