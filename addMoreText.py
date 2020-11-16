@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 doc1 = {"sentence" : "Today is a sunny day."}
-doc2 = {"sentence" : "Today is a bright-sunny day"}
+doc2 = {"sentence" : "Today is a bright-sunny dayd"}
 
 es.index(index="english", doc_type="sentences", id=1, body=doc1)
 #{u'_type': u'sentences', u'_seq_no': 1, u'_shards': {u'successful': 1, u'failed': 0, u'total': 2}, u'_index': u'english', u'_version': 2, u'_primary_term': 1, u'result': u'updated', u'_id': u'1'}
