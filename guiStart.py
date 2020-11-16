@@ -50,6 +50,7 @@ class UI (QMainWindow):
     def on_click(self):
          self.label.setText('Connect with Elastic SEARCH! Print results') 
          print('Connect with Elastic SEARCH! Print results')
+         print('Test git')
 
     def click2(self):
           print('Here i need to find a connection between the words')
