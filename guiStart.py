@@ -17,7 +17,7 @@ from datetime import datetime
 from elasticsearch_dsl import Document, Date, Integer, Keyword, Text
 from elasticsearch_dsl.connections import connections
 import login
-
+import requests
 from PyQt5 import QtCore, QtGui, QtWidgets
 import newuser
 from PyQt5 import QtWidgets
@@ -41,6 +41,7 @@ class UI (QMainWindow):
         self.button2 = self.findChild(QPushButton, "pushButton_login")
         self.text = self.findChild(QTextEdit,"textEditLeft")
         self.text = self.findChild(QTextEdit,"textEditRight")
+        self.button3 = self.findChild(QPushButton, "pushButton_query") 
 
         button = QPushButton('Hey', self)
         button.setToolTip('This is an example button')
@@ -51,6 +52,8 @@ class UI (QMainWindow):
         button.clicked.connect(self.on_click)
         self.button.clicked.connect(self.clk)
         self.button2.clicked.connect(self.click2)
+        self.button3.clicked.connect(self.click3)
+
         self.show()
 
     @pyqtSlot()
@@ -70,7 +73,36 @@ class UI (QMainWindow):
           self.ui.setupUi(self.window)
           self.window.show()
           
-          
+    def click3(self):
+          text = "England"
+          index = "cities"
+          print ('iam here now')
+          try:
+             client = Elasticsearch()
+             s = Search(using=client, index="news")
+             if text is not None:
+                    q = Q('multi_match', query=text, fields=['text']) 
+                    s = s.query(q)
+                    s = s.highlight('text', fragment_size=10)
+                    response = s.execute()
+                    
+                 
+                    for r in s.scan(): # scan allows to retrieve all matches
+                     print('ID= %s PATH=%s' % (r.meta.id, r.path))
+                     for j, fragment in enumerate(r.meta.highlight.text):
+                        print(' ->  TXT=%s' % fragment) 
+
+                    q = Q('query_string',query='England')
+                    s = s.query(q)
+                    response = s.execute()
+                    for r in s.scan(): # scan allows to retrieve all matches
+                     print('ID= %s TXT=%s PATH=%s' % (r.meta.id, r.text[0:20], r.path))
+                     getasString =  response.hits.total.relation #fix!
+                     print ('%d Documents' % response.hits.total.value) 
+                     self.text.append(getasString) 
+          except NotFoundError:
+            print('Index %s does not exists' % index)
+           
 
 
 
@@ -78,41 +110,26 @@ class UI (QMainWindow):
 
 
     def clk(self):
-          
+
           #retrieve data for id=2
+          r = requests.get("http://localhost:9200/news/_search?=q=") 
           
-          res = es.get(index="news", id='tLxuy3UBg-YlbYnR9IRP')
-          j =  'Trying to find with the exact word                [all]   ' + json.dumps(res['_index'])
-          k = json.dumps(res['_source']['text'])
+          body = json.loads(r.content)
+          print (body)
+
+          res = es.indices.get("news")
+      
+          print (res)
+          j =  'Trying to find with the exact word                [all]   ' + json.dumps(res)
+          k = json.dumps(body)
           print (res)
           self.label.setText(j)
-          self.text.setText(str(k))  
+          self.text.setText(k)  
           for hit in res:
             print(hit)
 
-          text = "London"
-          index = "cities"
-          try:
-             client = Elasticsearch()
-             s = Search(using=client, index="cities")
-             if text is not None:
-                    q = Q('multi_match', query=text, fields=['text'])
-                    s = s.query(q)
-                    s = s.highlight('text', fragment_size=10)
-                    response = s.execute()
-                    for r in s.scan(): # scan allows to retrieve all matches
-                     print('ID= %s PATH=%s' % (r.meta.id, r.path))
-                     for j, fragment in enumerate(r.meta.highlight.text):
-                        print(' ->  TXT=%s' % fragment) 
-           
-                    q = Q('query_string',query='London')
-                    s = s.query(q)
-                    response = s.execute()
-                    for r in s.scan(): # scan allows to retrieve all matches
-                     print('ID= %s TXT=%s PATH=%s' % (r.meta.id, r.text[0:20], r.path))
-                     print ('%d Documents' % response.hits.total.value) 
-          except NotFoundError:
-            print('Index %s does not exists' % index)   
+         
+             
          
            
            
