@@ -109,6 +109,10 @@ class Ui_Form(object):
              for x in val:
                 if username in x[0] and password in x[1]:
                     print("welcome ")
+                    Form.hide()
+                    import guiStart
+
+                    
                 else:
                     pass
             else:
