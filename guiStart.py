@@ -1,8 +1,8 @@
-`from __future__ import print_function
+from __future__ import print_function
 from collections import UserString
 from elasticsearch.exceptions import NotFoundError
 import sys
-
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QLabel,QMainWindow,QApplication, QWidget, QPushButton,QTextEdit
 from PyQt5.QtGui import QIcon
 from PyQt5 import uic
@@ -16,6 +16,13 @@ from elasticsearch_dsl import Search
 from datetime import datetime
 from elasticsearch_dsl import Document, Date, Integer, Keyword, Text
 from elasticsearch_dsl.connections import connections
+import login
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+import newuser
+from PyQt5 import QtWidgets
+import sqlite3
+
 
 
 
@@ -31,9 +38,9 @@ class UI (QMainWindow):
         uic.loadUi("C:/Users/motis/Desktop/groupPython/guiTest.ui",self)
         self.label = self.findChild(QLabel,"label")
         self.button = self.findChild(QPushButton, "pushButton")
-        self.button2 = self.findChild(QPushButton, "pushButton_2")
-        self.text = self.findChild(QTextEdit,"textEditRight")
+        self.button2 = self.findChild(QPushButton, "pushButton_login")
         self.text = self.findChild(QTextEdit,"textEditLeft")
+        self.text = self.findChild(QTextEdit,"textEditRight")
 
         button = QPushButton('Hey', self)
         button.setToolTip('This is an example button')
@@ -54,6 +61,15 @@ class UI (QMainWindow):
 
     def click2(self):
           print('Here i need to find a connection between the words')
+          Form = QtWidgets.QWidget()
+          ui = login.Ui_Form()
+          ui.setupUi(Form)
+          Form.show()
+          self.window = QtWidgets.QMainWindow()
+          self.ui = login.Ui_Form()
+          self.ui.setupUi(self.window)
+          self.window.show()
+          
           
 
 
