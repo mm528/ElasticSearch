@@ -97,9 +97,13 @@ class UI (QMainWindow):
                     response = s.execute()
                     for r in s.scan(): # scan allows to retrieve all matches
                      print('ID= %s TXT=%s PATH=%s' % (r.meta.id, r.text[0:20], r.path))
-                     getasString =  response.hits.total.relation #fix!
-                     print ('%d Documents' % response.hits.total.value) 
-                     self.text.append(getasString) 
+                    for hit in response.hits.hits:
+                          self.text.append(hit._source.text) #here you can see the right TEXT ! ! <hits.hits.text>
+                          
+                      
+                    #getasString =  response
+                    print ('%d Documents' % response.hits.total.value) 
+                   # self.text.append(getasString) 
           except NotFoundError:
             print('Index %s does not exists' % index)
            
