@@ -22,16 +22,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import newuser
 from PyQt5 import QtWidgets
 import sqlite3
-
-
-
-
+import nltk
+from nltk.stem import PorterStemmer
+from nltk.stem import LancasterStemmer
 import argparse
 from elasticsearch_dsl.query import Q
 
 
 
 class UI (QMainWindow):
+    #nltk.download()
+   
     def __init__(self):
         super(UI,self).__init__()
 
@@ -41,6 +42,7 @@ class UI (QMainWindow):
         self.text = self.findChild(QTextEdit,"textEditLeft")
         self.textTopRight = self.findChild(QTextEdit,"textEditRight")
         self.button3 = self.findChild(QPushButton, "pushButton_getData") 
+        self.buttonExit = self.findChild(QPushButton, "pushButton_exit")
 
         #Here is for the seatch button (text and button)
         self.searchButton = self.findChild(QPushButton, "pushButton_search_Button") 
@@ -57,6 +59,7 @@ class UI (QMainWindow):
         self.button2.clicked.connect(self.click2)
         self.button3.clicked.connect(self.click3)
         self.searchButton.clicked.connect(self.clickSearch)
+        self.buttonExit.clicked.connect(self.clickExit)
         
 
         self.show()
@@ -66,6 +69,9 @@ class UI (QMainWindow):
          self.label.setText('Connect with Elastic SEARCH! Print results') 
          print('Connect with Elastic SEARCH! Print results')
          print('Test git guys iam here e!')
+
+    def clickExit(self):
+        sys.exit()
 
     def click2(self):
           print('Here i need to find a connection between the words')
@@ -115,8 +121,12 @@ class UI (QMainWindow):
            
 
     def clickSearch(self):
+          porter = PorterStemmer()
+          lancaster=LancasterStemmer()
           self.textTopRight.setText("")
           getText = self.textSearch.toPlainText()
+          getText = porter.stem(getText)
+          print(getText)
           try:
                 client = Elasticsearch()
                 s = Search(using=client, index="news")
