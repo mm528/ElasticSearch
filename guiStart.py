@@ -43,6 +43,7 @@ class UI (QMainWindow):
         self.textTopRight = self.findChild(QTextEdit,"textEditRight")
         self.button3 = self.findChild(QPushButton, "pushButton_getData") 
         self.buttonExit = self.findChild(QPushButton, "pushButton_exit")
+        self.sendFiles = self.findChild(QPushButton, "pushButton_SendFiles")
 
         #Here is for the seatch button (text and button)
         self.searchButton = self.findChild(QPushButton, "pushButton_search_Button") 
@@ -60,6 +61,7 @@ class UI (QMainWindow):
         self.button3.clicked.connect(self.click3)
         self.searchButton.clicked.connect(self.clickSearch)
         self.buttonExit.clicked.connect(self.clickExit)
+        self.sendFiles.clicked.connect(self.sendFilesDrag)
         
 
         self.show()
@@ -73,8 +75,13 @@ class UI (QMainWindow):
     def clickExit(self):
         sys.exit()
 
+    def sendFilesDrag(self): 
+        
+        import  importFiles_Drag_And_Drop 
+        importFiles_Drag_And_Drop.main()
+
     def click2(self):
-          print('Here i need to find a connection between the words')
+          
           Form = QtWidgets.QWidget()
           ui = login.Ui_Form()
           ui.setupUi(Form)
@@ -152,7 +159,7 @@ class UI (QMainWindow):
                          for hit in response.hits.hits:
 
                               self.textTopRight.append("From the document -> " + hit._source.path[25:50])
-                              allTogether = allTogether + "  \n  "+ hit._source.path[25:50] +"\n"
+                              allTogether = allTogether + "  \n  " + hit._source.text[60:90] + "\n "+ hit._source.path[25:50] +"\n"
                         
             
                           #self.text.append(hit._source.text) #here you can see the right TEXT ! ! <hits.hits.text>
