@@ -76,7 +76,7 @@ class UI (QMainWindow):
         sys.exit()
 
     def sendFilesDrag(self): 
-        
+
         import  importFiles_Drag_And_Drop 
         importFiles_Drag_And_Drop.main()
 
@@ -92,80 +92,65 @@ class UI (QMainWindow):
           self.window.show()
           
     def click3(self):
-          text = "England"
-          index = "cities"
-          print ('iam here now')
           try:
              client = Elasticsearch()
-             s = Search(using=client, index="news")
-             if text is not None:
-                    q = Q('multi_match', query=text, fields=['text']) 
-                    s = s.query(q)
-                    s = s.highlight('text', fragment_size=10)
-                    response = s.execute()
-                    
-                 
-                    for r in s.scan(): # scan allows to retrieve all matches
-                     print('ID= %s PATH=%s' % (r.meta.id, r.path))
-                     for j, fragment in enumerate(r.meta.highlight.text):
-                        print(' ->  TXT=%s' % fragment) 
+             res = es.search(index="movies_netflix", body={})
+             sample = res['hits']['hits']
+             for hit in sample:
+                 print(hit)
 
-                    q = Q('query_string',query='England')
-                    s = s.query(q)
-                    response = s.execute()
-                    for r in s.scan(): # scan allows to retrieve all matches
-                     print('ID= %s TXT=%s PATH=%s' % (r.meta.id, r.text[0:20], r.path))
-                    for hit in response.hits.hits:
-                          self.textTopRight.append("From the document -> " + hit._source.path[25:50])
-                          #self.text.append(hit._source.text) #here you can see the right TEXT ! ! <hits.hits.text>
-                          
-                      
-                    #getasString =  response
-                    print ('%d Documents' % response.hits.total.value) 
-                   # self.text.append(getasString) s
+             s = Search(using=client, index="movies_netflix")
+             print(s)
+             q = Q('match_all') 
+             s = s.query(q)
+             s = s.highlight('text', fragment_size=20)
+             response = s.execute()
+             allTogether =''
+             for hit in response.hits.hits:
+                allTogether = allTogether + "\n" + hit._source.director
+                print(hit._source.director)
+             self.labelSearchResults.setText(allTogether)
           except NotFoundError:
-            print('Index %s does not exists' % index)
-           
+              print('error not found')
 
     def clickSearch(self):
           porter = PorterStemmer()
           lancaster=LancasterStemmer()
-          self.textTopRight.setText("")
+          #self.textTopRight.setText("")
           getText = self.textSearch.toPlainText()
-          getText = porter.stem(getText)
+          #getText = porter.stem(getText)
           print(getText)
           try:
                 client = Elasticsearch()
-                s = Search(using=client, index="news")
+                s = Search(using=client, index="movies_netflix")
                 if getText is not None:
                     q = Q('multi_match', query=getText, fields=['text']) 
                     s = s.query(q)
                     s = s.highlight('text', fragment_size=10)
                     response = s.execute()
                     
-                 
+                    
                     for r in s.scan(): # scan allows to retrieve all matches
                      print('ID= %s PATH=%s' % (r.meta.id, r.path))
                      for j, fragment in enumerate(r.meta.highlight.text):
                         print(' ->  TXT=%s' % fragment) 
 
-                    q = Q('query_string',query='England')
+                    q = Q('query_string',query=getText)
                     s = s.query(q)
                     response = s.execute()
                     for r in s.scan(): # scan allows to retrieve all matches
                      print('ID= %s TXT=%s PATH=%s' % (r.meta.id, r.text[0:20], r.path))
-                     if response.hits.total.value >0:
-                         allTogether =''
-                         for hit in response.hits.hits:
-
-                              self.textTopRight.append("From the document -> " + hit._source.path[25:50])
-                              allTogether = allTogether + "  \n  " + hit._source.text[60:90] + "\n "+ hit._source.path[25:50] +"\n"
+                     
+                     allTogether =''
+                     for hit in response.hits.hits:
+                        print(hit)
+                        self.textTopRight.append("From the document -> " + hit._source.path[25:50])
+                        allTogether = allTogether + "  \n  " + hit._source.text[60:90] + "\n "+ hit._source.path[25:50] +"\n"
                         
             
                           #self.text.append(hit._source.text) #here you can see the right TEXT ! ! <hits.hits.text>
-                         self.labelSearchResults.setText(allTogether + str(response.hits.total.value))
-                     elif response.hits.total.value == 0:
-                            print('not found')
+                     self.labelSearchResults.setText(allTogether + str(response.hits.total.value))
+                    
                       
                     #getasString =  response
                     #print ('%d Documents' % response.hits.total.value) 
