@@ -37,7 +37,6 @@ class UI (QMainWindow):
 
         uic.loadUi("C:/Users/motis/Desktop/groupPython/guiTest.ui",self)
         self.label = self.findChild(QLabel,"label")
-        self.button = self.findChild(QPushButton, "pushButton_login")
         self.button2 = self.findChild(QPushButton, "pushButton_login")
         self.text = self.findChild(QTextEdit,"textEditLeft")
         self.textTopRight = self.findChild(QTextEdit,"textEditRight")
@@ -55,7 +54,6 @@ class UI (QMainWindow):
 
 
         button.clicked.connect(self.on_click)
-        self.button.clicked.connect(self.clk)
         self.button2.clicked.connect(self.click2)
         self.button3.clicked.connect(self.click3)
         self.searchButton.clicked.connect(self.clickSearch)
@@ -157,38 +155,6 @@ class UI (QMainWindow):
                    # self.text.append(getasString) s
           except NotFoundError:
             print('Index %s does not exists' % index)
-
-         
-              
-          
-
-
-
-
-    def clk(self):
-
-          #retrieve data for id=2
-          r = requests.get("http://localhost:9200/news/_search?=q=") 
-          
-          body = json.loads(r.content)
-          print (body)
-
-          res = es.indices.get("news")
-      
-          print (res)
-          j =  'Trying to find with the exact word                [all]   ' + json.dumps(res)
-          k = json.dumps(body)
-          print (res)
-          self.label.setText(j)
-          self.text.textTopRight(k)  
-          for hit in res:
-            print(hit)
-
-         
-             
-         
-           
-           
 
 
           #s = Search(using=client, index="cities") \
