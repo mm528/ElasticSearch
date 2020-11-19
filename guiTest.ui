@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>987</width>
-    <height>822</height>
+    <height>922</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,11 +27,11 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Print Out results&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="pushButton_getData">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>510</y>
+      <x>640</x>
+      <y>350</y>
       <width>181</width>
       <height>41</height>
      </rect>
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>520</x>
-      <y>160</y>
+      <y>110</y>
       <width>411</width>
       <height>221</height>
      </rect>
@@ -53,8 +53,8 @@
    <widget class="QPushButton" name="pushButton_login">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>507</y>
+      <x>30</x>
+      <y>270</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -66,8 +66,8 @@
    <widget class="QTextEdit" name="textEditLeft">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>210</y>
+      <x>70</x>
+      <y>150</y>
       <width>141</width>
       <height>101</height>
      </rect>
@@ -76,8 +76,8 @@
    <widget class="QPushButton" name="pushButton_exit">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>510</y>
+      <x>150</x>
+      <y>270</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -86,17 +86,50 @@
      <string>Exit</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_query">
+   <widget class="QTextEdit" name="textEdit_search">
     <property name="geometry">
      <rect>
-      <x>490</x>
+      <x>140</x>
+      <y>460</y>
+      <width>641</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_search_Button">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
       <y>510</y>
-      <width>101</width>
-      <height>31</height>
+      <width>93</width>
+      <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string>GetQuery</string>
+     <string>Search</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_results">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>550</y>
+      <width>661</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

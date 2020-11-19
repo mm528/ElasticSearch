@@ -37,11 +37,16 @@ class UI (QMainWindow):
 
         uic.loadUi("C:/Users/motis/Desktop/groupPython/guiTest.ui",self)
         self.label = self.findChild(QLabel,"label")
-        self.button = self.findChild(QPushButton, "pushButton")
+        self.button = self.findChild(QPushButton, "pushButton_login")
         self.button2 = self.findChild(QPushButton, "pushButton_login")
         self.text = self.findChild(QTextEdit,"textEditLeft")
-        self.text = self.findChild(QTextEdit,"textEditRight")
-        self.button3 = self.findChild(QPushButton, "pushButton_query") 
+        self.textTopRight = self.findChild(QTextEdit,"textEditRight")
+        self.button3 = self.findChild(QPushButton, "pushButton_getData") 
+
+        #Here is for the seatch button (text and button)
+        self.searchButton = self.findChild(QPushButton, "pushButton_search_Button") 
+        self.textSearch = self.findChild(QTextEdit,"textEdit_search")
+        self.labelSearchResults = self.findChild(QLabel, "label_results")
 
         button = QPushButton('Hey', self)
         button.setToolTip('This is an example button')
@@ -53,6 +58,8 @@ class UI (QMainWindow):
         self.button.clicked.connect(self.clk)
         self.button2.clicked.connect(self.click2)
         self.button3.clicked.connect(self.click3)
+        self.searchButton.clicked.connect(self.clickSearch)
+        
 
         self.show()
 
@@ -98,17 +105,62 @@ class UI (QMainWindow):
                     for r in s.scan(): # scan allows to retrieve all matches
                      print('ID= %s TXT=%s PATH=%s' % (r.meta.id, r.text[0:20], r.path))
                     for hit in response.hits.hits:
-                          self.text.append(hit._source.text) #here you can see the right TEXT ! ! <hits.hits.text>
+                          self.textTopRight.append("From the document -> " + hit._source.path[25:50])
+                          #self.text.append(hit._source.text) #here you can see the right TEXT ! ! <hits.hits.text>
                           
                       
                     #getasString =  response
                     print ('%d Documents' % response.hits.total.value) 
-                   # self.text.append(getasString) 
+                   # self.text.append(getasString) s
           except NotFoundError:
             print('Index %s does not exists' % index)
            
 
+    def clickSearch(self):
+          self.textTopRight.setText("")
+          getText = self.textSearch.toPlainText()
+          try:
+                client = Elasticsearch()
+                s = Search(using=client, index="news")
+                if getText is not None:
+                    q = Q('multi_match', query=getText, fields=['text']) 
+                    s = s.query(q)
+                    s = s.highlight('text', fragment_size=10)
+                    response = s.execute()
+                    
+                 
+                    for r in s.scan(): # scan allows to retrieve all matches
+                     print('ID= %s PATH=%s' % (r.meta.id, r.path))
+                     for j, fragment in enumerate(r.meta.highlight.text):
+                        print(' ->  TXT=%s' % fragment) 
 
+                    q = Q('query_string',query='England')
+                    s = s.query(q)
+                    response = s.execute()
+                    for r in s.scan(): # scan allows to retrieve all matches
+                     print('ID= %s TXT=%s PATH=%s' % (r.meta.id, r.text[0:20], r.path))
+                     if response.hits.total.value >0:
+                         allTogether =''
+                         for hit in response.hits.hits:
+
+                              self.textTopRight.append("From the document -> " + hit._source.path[25:50])
+                              allTogether = allTogether + "  \n  "+ hit._source.path[25:50] +"\n"
+                        
+            
+                          #self.text.append(hit._source.text) #here you can see the right TEXT ! ! <hits.hits.text>
+                         self.labelSearchResults.setText(allTogether + str(response.hits.total.value))
+                     elif response.hits.total.value == 0:
+                            print('not found')
+                      
+                    #getasString =  response
+                    #print ('%d Documents' % response.hits.total.value) 
+                   # self.text.append(getasString) s
+          except NotFoundError:
+            print('Index %s does not exists' % index)
+
+         
+              
+          
 
 
 
@@ -128,7 +180,7 @@ class UI (QMainWindow):
           k = json.dumps(body)
           print (res)
           self.label.setText(j)
-          self.text.setText(k)  
+          self.text.textTopRight(k)  
           for hit in res:
             print(hit)
 
