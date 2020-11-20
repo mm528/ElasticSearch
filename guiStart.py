@@ -31,7 +31,7 @@ from elasticsearch_dsl.query import Q
 
 
 class UI (QMainWindow):
-    #nltk.download()
+    #nltk.download()`1`01
    
     def __init__(self):
         super(UI,self).__init__()
