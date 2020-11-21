@@ -100,7 +100,7 @@ class UI (QMainWindow):
         import  importFiles_Drag_And_Drop 
         importFiles_Drag_And_Drop.main()
 
-    def click2(self):
+    def click2(self): #create the WINDOW
           
           Form = QtWidgets.QWidget()
           ui = login.Ui_Form()
@@ -111,7 +111,7 @@ class UI (QMainWindow):
           self.ui.setupUi(self.window)
           self.window.show()
           
-    def click3(self):
+    def click3(self): #search from the elastic search
           try:
              client = Elasticsearch()
              res = es.search(index="movies_netflix", body={})
@@ -134,7 +134,7 @@ class UI (QMainWindow):
               print('error not found')
 
 
-           #Dialog MESSAGE   
+           #Dialog MESSAGE   To ask the user if wants to stem the word
     def takeinputs(self,k): 
         name, done1 = QtWidgets.QInputDialog.getText( 
              self, 'Note', 'Are you sure you dont want to look with this?  \n' + '>>   '+k + '     YES   OR    NO    ')  
