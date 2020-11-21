@@ -23,7 +23,7 @@ from collections import UserString
 from elasticsearch.exceptions import NotFoundError
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QLabel, QMainWindow, QApplication, QTableView, QWidget, QPushButton, QTextEdit, QInputDialog
+from PyQt5.QtWidgets import QLabel, QMainWindow, QApplication, QTableView, QWidget, QPushButton, QTextEdit, QInputDialog, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot
@@ -136,6 +136,10 @@ class UI (QMainWindow):
         print(name)
         return name
 
+    def sorryMessage(self):
+        QMessageBox.about(
+            self, "Error", "Iam affraid we are not having this word  \n into the Netflix data. Please try again")
+
         # Focusing over here! we are collecting the data and do some processing
 
     def clickSearch(self):
@@ -158,8 +162,11 @@ class UI (QMainWindow):
                                  "'% " + getText + "%'  or release_year like" + "'% " + getText + "%'  or rating like" + "'% " + getText + "%'  or duration like" + "'% " + getText + "%'   or listed_in like" + "'% " + getText + "%' or description like" + "'% " + getText + "%' order by type")
 
             print(getText)
-            if (dfQuery.count() > distData.count()):
-                dfQuery.show(10)
+            if (dfQuery.count() >= distData.count()):
+                if (dfQuery.count() == 0):
+                    self.sorryMessage()
+                else:
+                    dfQuery.show(10)
             else:
                 # check with stemming,. better search!
                 # We can cerate a list over here to have the data in a nice form
@@ -173,7 +180,7 @@ class UI (QMainWindow):
                     self.resultText.append(str(k))
                 else:
                     j = dfQuery.select(col("*")).collect()
-                    self.resultText.appned(str(j))
+                    self.resultText.append(str(j))
 
         except NotFoundError:
             print('Out of limit')
