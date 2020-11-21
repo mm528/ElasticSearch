@@ -2,9 +2,13 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const router = express.Router();
+var bodyParser	= require("body-parser")
+
+
 
 router.get('/',function(req,res){
   res.sendFile(path.join("groupPython/myapp"+'/main.html'));
+  
   //__dirname : It will resolve to your project folder.
 });
 
@@ -19,5 +23,6 @@ router.get('/sitemap',function(req,res){
 //add the router
 app.use('/', router);
 app.listen(process.env.port || 3000);
-
+app.use(bodyParser.json()); 
 console.log('Running at Port 3000');
+

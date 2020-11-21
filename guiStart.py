@@ -3,7 +3,7 @@ from collections import UserString
 from elasticsearch.exceptions import NotFoundError
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QLabel,QMainWindow,QApplication, QWidget, QPushButton,QTextEdit
+from PyQt5.QtWidgets import QLabel,QMainWindow,QApplication, QTableView, QWidget, QPushButton,QTextEdit
 from PyQt5.QtGui import QIcon
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot
@@ -27,12 +27,29 @@ from nltk.stem import PorterStemmer
 from nltk.stem import LancasterStemmer
 import argparse
 from elasticsearch_dsl.query import Q
-
+from pyspark.sql import SparkSession
+from pyspark.ml.clustering import KMeans
+import pandas as pd 
+spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec", "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
+spark = SparkSession.builder.appName("NetflixCsv").getOrCreate()
+df = spark.read.csv(path = "C:/Users/motis/Desktop/groupPython/netflix_titles.csv",
+sep = ",",
+header = True,
+quote = '"',
+schema = "show_id INT , type string, title string, director string , cast string, country string, date_added DATE, release_year DATE, rating string, duration string, listed_in string , description string"
+)
+df.createOrReplaceTempView("netflix")
 
 
 class UI (QMainWindow):
+
+
     #nltk.download()`1`01
    
+    # df.show(5)
+    # df.printSchema()
+    
+
     def __init__(self):
         super(UI,self).__init__()
 
@@ -44,6 +61,7 @@ class UI (QMainWindow):
         self.button3 = self.findChild(QPushButton, "pushButton_getData") 
         self.buttonExit = self.findChild(QPushButton, "pushButton_exit")
         self.sendFiles = self.findChild(QPushButton, "pushButton_SendFiles")
+        self.table = self.findChild(QTableView , "tableView_Results")
 
         #Here is for the seatch button (text and button)
         self.searchButton = self.findChild(QPushButton, "pushButton_search_Button") 
@@ -116,45 +134,15 @@ class UI (QMainWindow):
     def clickSearch(self):
           porter = PorterStemmer()
           lancaster=LancasterStemmer()
-          #self.textTopRight.setText("")
+        
           getText = self.textSearch.toPlainText()
-          #getText = porter.stem(getText)
+          
           print(getText)
           try:
-                client = Elasticsearch()
-                s = Search(using=client, index="movies_netflix")
-                if getText is not None:
-                    q = Q('multi_match', query=getText, fields=['text']) 
-                    s = s.query(q)
-                    s = s.highlight('text', fragment_size=10)
-                    response = s.execute()
-                    
-                    
-                    for r in s.scan(): # scan allows to retrieve all matches
-                     print('ID= %s PATH=%s' % (r.meta.id, r.path))
-                     for j, fragment in enumerate(r.meta.highlight.text):
-                        print(' ->  TXT=%s' % fragment) 
-
-                    q = Q('query_string',query=getText)
-                    s = s.query(q)
-                    response = s.execute()
-                    for r in s.scan(): # scan allows to retrieve all matches
-                     print('ID= %s TXT=%s PATH=%s' % (r.meta.id, r.text[0:20], r.path))
-                     
-                     allTogether =''
-                     for hit in response.hits.hits:
-                        print(hit)
-                        self.textTopRight.append("From the document -> " + hit._source.path[25:50])
-                        allTogether = allTogether + "  \n  " + hit._source.text[60:90] + "\n "+ hit._source.path[25:50] +"\n"
-                        
-            
-                          #self.text.append(hit._source.text) #here you can see the right TEXT ! ! <hits.hits.text>
-                     self.labelSearchResults.setText(allTogether + str(response.hits.total.value))
-                    
-                      
-                    #getasString =  response
-                    #print ('%d Documents' % response.hits.total.value) 
-                   # self.text.append(getasString) s
+           
+               dfQuery = spark.sql("Select * from netflix where title like" + "'% "+ getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% "+ getText + "%' or cast like"+ "'% " +getText + "%' or country like" + "'%"+ getText + "%'   or date_added like" + "'% "+ getText + "%'  or release_year like" + "'% "+ getText + "%'  or rating like" + "'% "+ getText + "%'  or duration like" + "'% "+ getText + "%'   or listed_in like" + "'% "+ getText + "%' or description like" + "'% "+ getText + "%' order by type")
+               dfQuery.show(10)
+               
           except NotFoundError:
             print('Index %s does not exists' % index)
 

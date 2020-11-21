@@ -17,10 +17,10 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>30</y>
-      <width>421</width>
-      <height>121</height>
+      <x>310</x>
+      <y>290</y>
+      <width>311</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="text">
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="pushButton_getData">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>350</y>
+      <x>50</x>
+      <y>300</y>
       <width>181</width>
       <height>41</height>
      </rect>
@@ -43,10 +43,10 @@
    <widget class="QTextEdit" name="textEditRight">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>110</y>
-      <width>411</width>
-      <height>221</height>
+      <x>230</x>
+      <y>360</y>
+      <width>461</width>
+      <height>101</height>
      </rect>
     </property>
    </widget>
@@ -61,16 +61,6 @@
     </property>
     <property name="text">
      <string>Login</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEditLeft">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>150</y>
-      <width>141</width>
-      <height>101</height>
-     </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_exit">
@@ -119,10 +109,10 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_results">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>540</y>
-      <width>661</width>
-      <height>331</height>
+      <x>160</x>
+      <y>520</y>
+      <width>601</width>
+      <height>361</height>
      </rect>
     </property>
     <property name="text">
