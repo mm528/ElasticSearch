@@ -150,7 +150,7 @@ class UI (QMainWindow):
                print(getText)
                if (dfQuery.count() > distData.count()):
                 dfQuery.show(10)
-               else:
+               else:#check with stemming,. better search!
                    print('Are you not sure you dont want to search with this?  ' + getText)
                
           except NotFoundError:
