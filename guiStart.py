@@ -43,7 +43,7 @@ df.createOrReplaceTempView("netflix")
 
 
 class UI (QMainWindow):
-
+    
 
     #nltk.download()`1`01
    
@@ -139,12 +139,22 @@ class UI (QMainWindow):
           self.textTopRight.append(getText)
 
           try:
+
               #Here is where sql command comes in to resolve the problem of the search (ordered by type)
+              
                dfQuery = spark.sql("Select * from netflix where title like" + "'% "+ getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% "+ getText + "%' or cast like"+ "'% " +getText + "%' or country like" + "'%"+ getText + "%'   or date_added like" + "'% "+ getText + "%'  or release_year like" + "'% "+ getText + "%'  or rating like" + "'% "+ getText + "%'  or duration like" + "'% "+ getText + "%'   or listed_in like" + "'% "+ getText + "%' or description like" + "'% "+ getText + "%' order by type")
-               dfQuery.show(10)
+               getText = porter.stem(getText)
+               distData = spark.sql("Select * from netflix where title like" + "'% "+ getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% "+ getText + "%' or cast like"+ "'% " +getText + "%' or country like" + "'%"+ getText + "%'   or date_added like" + "'% "+ getText + "%'  or release_year like" + "'% "+ getText + "%'  or rating like" + "'% "+ getText + "%'  or duration like" + "'% "+ getText + "%'   or listed_in like" + "'% "+ getText + "%' or description like" + "'% "+ getText + "%' order by type")
+              
+               
+               print(getText)
+               if (dfQuery.count() > distData.count()):
+                dfQuery.show(10)
+               else:
+                   print('Are you not sure you dont want to search with this?  ' + getText)
                
           except NotFoundError:
-            print('Index %s does not exists' % index)
+            print('Out of limit' )
 
 
           #s = Search(using=client, index="cities") \
