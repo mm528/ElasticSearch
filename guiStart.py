@@ -38,6 +38,7 @@ header = True,
 quote = '"',
 schema = "show_id INT , type string, title string, director string , cast string, country string, date_added DATE, release_year DATE, rating string, duration string, listed_in string , description string"
 )
+df.cache()
 df.createOrReplaceTempView("netflix")
 
 
@@ -68,13 +69,10 @@ class UI (QMainWindow):
         self.textSearch = self.findChild(QTextEdit,"textEdit_search")
         self.labelSearchResults = self.findChild(QLabel, "label_results")
 
-        button = QPushButton('Hey', self)
-        button.setToolTip('This is an example button')
-        button.move(100,70)
+  
+
+
         
-
-
-        button.clicked.connect(self.on_click)
         self.button2.clicked.connect(self.click2)
         self.button3.clicked.connect(self.click3)
         self.searchButton.clicked.connect(self.clickSearch)
@@ -138,6 +136,8 @@ class UI (QMainWindow):
           getText = self.textSearch.toPlainText()
           
           print(getText)
+          self.textTopRight.append(getText)
+
           try:
               #Here is where sql command comes in to resolve the problem of the search (ordered by type)
                dfQuery = spark.sql("Select * from netflix where title like" + "'% "+ getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% "+ getText + "%' or cast like"+ "'% " +getText + "%' or country like" + "'%"+ getText + "%'   or date_added like" + "'% "+ getText + "%'  or release_year like" + "'% "+ getText + "%'  or rating like" + "'% "+ getText + "%'  or duration like" + "'% "+ getText + "%'   or listed_in like" + "'% "+ getText + "%' or description like" + "'% "+ getText + "%' order by type")
