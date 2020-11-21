@@ -3,7 +3,7 @@ from collections import UserString
 from elasticsearch.exceptions import NotFoundError
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QLabel,QMainWindow,QApplication, QTableView, QWidget, QPushButton,QTextEdit
+from PyQt5.QtWidgets import QLabel,QMainWindow,QApplication, QTableView, QWidget, QPushButton,QTextEdit,QInputDialog
 from PyQt5.QtGui import QIcon
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot
@@ -30,6 +30,7 @@ from elasticsearch_dsl.query import Q
 from pyspark.sql import SparkSession
 from pyspark.ml.clustering import KMeans
 import pandas as pd 
+from pyspark.sql.functions import col
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec", "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
 spark = SparkSession.builder.appName("NetflixCsv").getOrCreate()
 df = spark.read.csv(path = "C:/Users/motis/Desktop/groupPython/netflix_titles.csv",
@@ -45,15 +46,15 @@ df.createOrReplaceTempView("netflix")
 class UI (QMainWindow):
     
 
-    #nltk.download()`1`01
-   
-    # df.show(5)
-    # df.printSchema()
-    
-
     def __init__(self):
         super(UI,self).__init__()
 
+
+
+        """
+        Here we are creating the GUI (Button, Text)
+
+        """    
         uic.loadUi("C:/Users/motis/Desktop/groupPython/guiTest.ui",self)
         self.label = self.findChild(QLabel,"label")
         self.button2 = self.findChild(QPushButton, "pushButton_login")
@@ -63,15 +64,16 @@ class UI (QMainWindow):
         self.buttonExit = self.findChild(QPushButton, "pushButton_exit")
         self.sendFiles = self.findChild(QPushButton, "pushButton_SendFiles")
         self.table = self.findChild(QTableView , "tableView_Results")
-
+        self.resultText = self.findChild(QTextEdit, "textEdit_Results_From_Elastic")
+    
         #Here is for the seatch button (text and button)
         self.searchButton = self.findChild(QPushButton, "pushButton_search_Button") 
         self.textSearch = self.findChild(QTextEdit,"textEdit_search")
         self.labelSearchResults = self.findChild(QLabel, "label_results")
-
+    
   
 
-
+        #Link shapes with functions
         
         self.button2.clicked.connect(self.click2)
         self.button3.clicked.connect(self.click3)
@@ -82,6 +84,8 @@ class UI (QMainWindow):
 
         self.show()
 
+
+    #Beggining of the elastic search (first apprach with button - probly needs to be deleted)
     @pyqtSlot()
     def on_click(self):
          self.label.setText('Connect with Elastic SEARCH! Print results') 
@@ -129,6 +133,18 @@ class UI (QMainWindow):
           except NotFoundError:
               print('error not found')
 
+
+           #Dialog MESSAGE   
+    def takeinputs(self,k): 
+        name, done1 = QtWidgets.QInputDialog.getText( 
+             self, 'Note', 'Are you sure you dont want to look with this?  \n' + '>>   '+k + '     YES   OR    NO    ')  
+        print(name)
+        return name;
+	    
+
+    
+        #Focusing over here! we are collecting the data and do some processing
+        
     def clickSearch(self):
           porter = PorterStemmer()
           lancaster=LancasterStemmer()
@@ -150,8 +166,26 @@ class UI (QMainWindow):
                print(getText)
                if (dfQuery.count() > distData.count()):
                 dfQuery.show(10)
-               else:#check with stemming,. better search!
-                   print('Are you not sure you dont want to search with this?  ' + getText)
+               else:
+                      #check with stemming,. better search!
+                    #We can cerate a list over here to have the data in a nice form
+                    # k = dfQuery.select(col("title")).collect()
+                    # self.resultText.append(str(k))
+
+
+                   answer = self.takeinputs(getText)
+                   if answer == 'YES':
+                       print ('Success')
+                       k = distData.select(col("*")).collect()
+                       self.resultText.append(str(k))
+                   else:
+                       j = dfQuery.select(col("*")).collect()
+                       self.resultText.appned(str(j))
+
+                                      
+                   
+
+
                
           except NotFoundError:
             print('Out of limit' )
