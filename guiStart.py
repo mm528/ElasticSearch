@@ -6,6 +6,7 @@ from pyspark.ml.clustering import KMeans
 from pyspark.sql import SparkSession
 from elasticsearch_dsl.query import Q
 import argparse
+import pandas as pd
 from nltk.stem import LancasterStemmer
 from nltk.stem import PorterStemmer
 import nltk
@@ -26,9 +27,18 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QLabel, QMainWindow, QApplication, QTableView, QWidget, QPushButton, QTextEdit, QInputDialog, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QAbstractTableModel
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import search
+from pickle import STRING
+import sys
+import pandas as pd
+from PyQt5.QtWidgets import QApplication, QTableView
+from PyQt5.QtCore import QAbstractTableModel, Qt
+from pyspark.sql import SparkSession
+Qt = QtCore.Qt
+
+
 es = Elasticsearch("http://localhost:9200")
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
@@ -41,6 +51,9 @@ df = spark.read.csv(path="C:/Users/motis/Desktop/groupPython/netflix_titles.csv"
                     )
 df.cache()
 df.createOrReplaceTempView("netflix")
+dfTEST = pd.read_csv('netflix_titles.csv')
+
+
 
 
 class UI (QMainWindow):
@@ -60,7 +73,7 @@ class UI (QMainWindow):
         self.button3 = self.findChild(QPushButton, "pushButton_getData")
         self.buttonExit = self.findChild(QPushButton, "pushButton_exit")
         self.sendFiles = self.findChild(QPushButton, "pushButton_SendFiles")
-        self.table = self.findChild(QTableView, "tableView_Results")
+        self.table = self.findChild(QTableView, "tableView_results")
         self.resultText = self.findChild(
             QTextEdit, "textEdit_Results_From_Elastic")
 
@@ -72,8 +85,8 @@ class UI (QMainWindow):
 
         # Link shapes with functions
 
-        self.button2.clicked.connect(self.click2)
-        self.button3.clicked.connect(self.click3)
+        
+        
         self.searchButton.clicked.connect(self.clickSearch)
         self.buttonExit.clicked.connect(self.clickExit)
         self.sendFiles.clicked.connect(self.sendFilesDrag)
@@ -176,8 +189,11 @@ class UI (QMainWindow):
                 answer = self.takeinputs(getText)
                 if answer == 'YES':
                     print('Success')
-                    k = distData.select(col("*")).collect()
-                    self.resultText.append(str(k))
+                    df2 = pd.DataFrame(distData.collect())
+                    print(df2)
+
+                    #k = distData.select(col("*")).collect()
+                    #self.resultText.append(str(k))
                 else:
                     j = dfQuery.select(col("*")).collect()
                     self.resultText.append(str(j))
