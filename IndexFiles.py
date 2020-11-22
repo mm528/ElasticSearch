@@ -26,14 +26,35 @@ import os
 import codecs
 ldocs = []
 client = Elasticsearch("http://localhost:9200")
+
+def generate_files_list(path):
+    """
+    Generates a list of all the files inside a path (recursivelly)
+    :param path:
+    :return:
+    """
+    lfiles = []
+    # generates the file names in a directory tree by walking the tree either top-down or bottom-up
+    for lf in os.walk(path):
+        print (path)
+        # for every folder returns [root of each directory, sub-directories, files]
+        if lf[2]:
+            for f in lf[2]:
+                lfiles.append(lf[0] + '/' + f)
+    return lfiles
+
+
+
+
+
 def main(path, indexname):
     resp = requests.get('http://localhost:9200/?pretty')
-    if __name__ == '__main__':
+    if __name__ != '__main__':
         # path to folder with documents to be indexed
         PATH_NAME = path
         # index name
         INDEX_NAME = indexname
-
+        print (PATH_NAME + 'Iam here')
         lfiles = generate_files_list(PATH_NAME)
         print('Indexing %d files'%len(lfiles))
         print('Reading files ...')

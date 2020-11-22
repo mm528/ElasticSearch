@@ -55,15 +55,15 @@ class AppDemo(QMainWindow):
     def upload(self):
         text, okPressed = QInputDialog.getText(self, "Get text","Please provide your index Name", QLineEdit.Normal, "")
         if okPressed and text != '':
-            IndexFiles.main(globalText, text)
-            print(text)
+            IndexFiles.main(self.getSelectedItem(), text)
+            
             
 
 
     def getSelectedItem(self):
         item = QListWidgetItem(self.listbox_view.currentItem())
         globalText = item.text()
-        return item.text()
+        return str(item.text())
  
     
 def main(): 
