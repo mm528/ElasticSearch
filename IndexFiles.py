@@ -54,7 +54,7 @@ def main(path, indexname):
         PATH_NAME = path
         # index name
         INDEX_NAME = indexname
-        print (PATH_NAME + 'Iam here')
+        print (PATH_NAME)
         lfiles = generate_files_list(PATH_NAME)
         print('Indexing %d files'%len(lfiles))
         print('Reading files ...')
