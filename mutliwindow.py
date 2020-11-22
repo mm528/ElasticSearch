@@ -1,4 +1,6 @@
 from __future__ import print_function
+from random import randint
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget
 import pandas as pd
 import json
 from pyspark.sql.functions import col
@@ -54,10 +56,37 @@ df.createOrReplaceTempView("netflix")
 dfTEST = pd.read_csv('netflix_titles.csv')
 
 
+class AnotherWindow(QWidget):
+    """
+    This "window" is a QWidget. If it has no parent, it
+    will appear as a free-floating window as we want.
+    """
 
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout()
+        self.label = QLabel("Another Window % d" % randint(0, 100))
+        layout.addWidget(self.label)
+        self.setLayout(layout)
+
+
+class MainWindow(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+        self.w = None  # No external window yet.
+        self.button = QPushButton("Push for Window")
+        self.button.clicked.connect(self.show_new_window)
+        self.setCentralWidget(self.button)
+
+    def show_new_window(self, checked):
+        if self.w is None:
+            self.w = AnotherWindow()
+        self.w.show()
 
 class UI (QMainWindow):
-
+    
+    
     def __init__(self):
         super(UI, self).__init__()
 
@@ -192,8 +221,8 @@ class UI (QMainWindow):
                     df2 = pd.DataFrame(distData.collect())
                     print(df2)
                     #thelw na fkalw to window!
-                    #import testPanda
-                    #testPanda.pandasModel()
+                    import testPanda
+                    testPanda.main(df2)
                     #k = distData.select(col("*")).collect()
                     #self.resultText.append(str(k))
                 else:
@@ -207,9 +236,7 @@ class UI (QMainWindow):
             # .query("match", _source="London")
 
         # os.system('C:/Users/motis/Desktop/groupPython/SearchIndex.py')
-
-
-app = QApplication(sys.argv).instance()
-UIWindow = UI()
+app = QApplication(sys.argv)
+w = MainWindow()
+w.show()
 app.exec_()
-sys.exit(app.exec_())

@@ -1,7 +1,9 @@
 import sys, os
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton,QInputDialog,QLineEdit
 from PyQt5.QtCore import Qt, QUrl
- 
+import IndexFiles
+
+globalText =''
 class ListBoxWidget(QListWidget):
 
     def __init__(self, parent=None):
@@ -53,18 +55,19 @@ class AppDemo(QMainWindow):
     def upload(self):
         text, okPressed = QInputDialog.getText(self, "Get text","Please provide your index Name", QLineEdit.Normal, "")
         if okPressed and text != '':
+            IndexFiles.main(globalText, text)
             print(text)
+            
 
 
     def getSelectedItem(self):
         item = QListWidgetItem(self.listbox_view.currentItem())
+        globalText = item.text()
         return item.text()
  
     
 def main(): 
     
-        
- 
         demo = AppDemo()
         demo.show()
  

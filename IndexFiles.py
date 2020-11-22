@@ -20,49 +20,58 @@ from __future__ import print_function
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from elasticsearch.exceptions import NotFoundError
-
+import requests
 import argparse
 import os
 import codecs
-
-def main():
+ldocs = []
+client = Elasticsearch("http://localhost:9200")
+def main(path, indexname):
+    resp = requests.get('http://localhost:9200/?pretty')
     if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--path', required=True, default=None, help='Path to the files')
-    parser.add_argument('--index', required=True, default=None, help='Index for the files')
+        # path to folder with documents to be indexed
+        PATH_NAME = path
+        # index name
+        INDEX_NAME = indexname
 
-    args = parser.parse_args()
+        lfiles = generate_files_list(PATH_NAME)
+        print('Indexing %d files'%len(lfiles))
+        print('Reading files ...')
+        
+        # Reads all the documents in a directory tree and generates an index operation for each
+        
+        for f in lfiles:
+            ftxt = codecs.open(f, "r", encoding='iso-8859-1')
 
-    # path to folder with documents to be indexed
-    PATH_NAME = args.path
-    # index name
-    INDEX_NAME = args.index
-
-    lfiles = generate_files_list(PATH_NAME)
-    print('Indexing %d files'%len(lfiles))
-    print('Reading files ...')
+            text = ''
+            for line in ftxt:
+                text += line
+            # Insert operation for a document with fields 'path' and 'text'
+            ldocs.append({'_op_type': 'index', '_index': INDEX_NAME, 'path': f, 'text': text})
     
-    # Reads all the documents in a directory tree and generates an index operation for each
-    ldocs = []
-    for f in lfiles:
-        ftxt = codecs.open(f, "r", encoding='iso-8859-1')
-
-        text = ''
-        for line in ftxt:
-            text += line
-        # Insert operation for a document with fields 'path' and 'text'
-        ldocs.append({'_op_type': 'index', '_index': INDEX_NAME, 'path': f, 'text': text})
-
     # Working with ElasticSearch
-    client = Elasticsearch()
+   
+    try:
+        resp = requests.get('http://localhost:9200/?pretty')
+        print(resp.content)
+        client = Elasticsearch("http://localhost:9200")
 
-    # Drop index if it exists
-    if client.indices.exists(INDEX_NAME):
-        client.indices.delete(INDEX_NAME)
-    # Create index and ignore 400 cause by IndexAlreadyExistsException when creating an index.
-    client.indices.create(index=INDEX_NAME, ignore=400)
 
-    # Bulk execution of elasticsearch operations (faster than executing all one by one)
-    print('Indexing ...')
-    bulk(client, ldocs)
+        
+            # index name
+        INDEX_NAME = indexname
+
+        # Drop index if it exists
+        if client.indices.exists(INDEX_NAME):
+            client.indices.delete(INDEX_NAME)
+        # Create index and ignore 400 cause by IndexAlreadyExistsException when creating an index.
+        client.indices.create(index=INDEX_NAME, ignore=400)
+
+        # Bulk execution of elasticsearch operations (faster than executing all one by one)
+        print('Indexing ...')
+        bulk(client, ldocs)
+
+    except Exception:
+        print('Elastic search is not running')
+    
     

@@ -1,4 +1,3 @@
-from pickle import STRING
 import sys
 import pandas as pd
 from PyQt5.QtWidgets import QApplication, QTableView
@@ -15,11 +14,16 @@ df = spark.read.csv(path="C:/Users/motis/Desktop/groupPython/netflix_titles.csv"
                     )
 df.cache()
 df.createOrReplaceTempView("netflix")
-df.limit(10).select("title").collect()
-df2 = pd.DataFram(df)
+
+df = pd.read_csv ('netflix_titles.csv')
 
 
 class pandasModel(QAbstractTableModel):
+   
+    view = QTableView()
+    view.setModel(df)
+    view.resize(800, 600)
+    view.show()
 
     def __init__(self, data):
         QAbstractTableModel.__init__(self)
@@ -42,12 +46,9 @@ class pandasModel(QAbstractTableModel):
             return self._data.columns[col]
         return None
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    model = pandasModel(df2)
-    view = QTableView()
-    view.setModel(model)
-    view.resize(800, 600)
-    view.show()
-    sys.exit(app.exec_())
+def appDemo():
+   app = pandasModel()
+   app.show()
+
+    
 
