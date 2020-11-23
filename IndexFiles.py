@@ -77,9 +77,9 @@ def main(path, indexname):
         print(resp.content)
         client = Elasticsearch("http://localhost:9200")
 
-
         
-            # index name
+        
+            # index name 
         INDEX_NAME = indexname
 
         # Drop index if it exists
