@@ -10,11 +10,11 @@ train = pd.read_csv('netflix_with_rating.csv', encoding=result['encoding'])
 print(train)
 print(train.columns.values)
 
-print(train["imdbID"][1]) #>>>>>>>>>>>>>>>>>>String List
+print(train["imdbID"][1]) #>>>>>>>>>>>>>>>>>>String List (Text)
 # Import BeautifulSoup into your workspace
 from bs4 import BeautifulSoup
 # Initialize the BeautifulSoup object on a single movie review
-example1 = BeautifulSoup(train["imdbID"][1] , "html.parser") #>>>>>>>>>>>>>>>>String list
+example1 = BeautifulSoup(train["imdbID"][1] , "html.parser") #>>>>>>>>>>>>>>>>String list (Text)
 # Print the raw review and then the output of get_text(), for
 # comparison
 print(train["imdbID"][1]) #>>>>>>>>>>>>>>. Sring
@@ -92,7 +92,7 @@ for i in range( 0, num_reviews ):
  #print (len(str))
  #print(i)
  if (len(str) > 0 ):
-     clean_train_reviews.append( review_to_words(train["genre"][i] ) )
+     clean_train_reviews.append( review_to_words(train["genre"][i] ) ) #>>>>> HOW ITS LINK ! SINDESI ME TO TYPE TIS TAINIAS!
 
 
 print("Creating the bag of words...\n")
@@ -149,7 +149,7 @@ print(tfidf_vocab)
 
 from sklearn.cluster import KMeans
 # Perform k-means clustering
-num_clusters = 2
+num_clusters =4 
 kmeans = KMeans(n_clusters=num_clusters)
 # Use k-keans to make sentiment label clustering
 kmeans.fit(tfidf_train_data_features)
@@ -178,7 +178,7 @@ for i in range(num_clusters):
 from sklearn.model_selection import train_test_split
 # split features and labels (e.g. test = 20%, training = 80% )
 # try both bag of words and tfidf features
-x_train, x_test, y_train, y_test = train_test_split(tfidf_train_data_features,train['imdbID'].values, test_size=0.33)
+x_train, x_test, y_train, y_test = train_test_split(tfidf_train_data_features,train['imdbID'].values, test_size=0.33) 
 print("Training the random forest...")
 from sklearn.ensemble import RandomForestClassifier
 # Initialize a Random Forest classifier with 100 trees
