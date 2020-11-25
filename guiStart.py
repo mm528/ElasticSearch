@@ -1,4 +1,7 @@
 from __future__ import print_function
+import time
+import webbrowser
+from tempfile import NamedTemporaryFile
 import pandas as pd
 import json
 from pyspark.sql.functions import col
@@ -37,10 +40,7 @@ from PyQt5.QtWidgets import QApplication, QTableView
 from PyQt5.QtCore import QAbstractTableModel, Qt
 from pyspark.sql import SparkSession
 Qt = QtCore.Qt
-from tempfile import NamedTemporaryFile
-import webbrowser
-import time
-answer='false'
+answer = 'false'
 es = Elasticsearch("http://localhost:9200")
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
@@ -54,8 +54,6 @@ df = spark.read.csv(path="C:/Users/motis/Desktop/groupPython/netflix_titles.csv"
 df.cache()
 df.createOrReplaceTempView("netflix")
 dfTEST = pd.read_csv('netflix_titles.csv')
-
-
 
 
 class UI (QMainWindow):
@@ -87,8 +85,6 @@ class UI (QMainWindow):
 
         # Link shapes with functions
 
-        
-        
         self.searchButton.clicked.connect(self.clickSearch)
         self.buttonExit.clicked.connect(self.clickExit)
         self.sendFiles.clicked.connect(self.sendFilesDrag)
@@ -107,14 +103,11 @@ class UI (QMainWindow):
         sys.exit()
 
     def sendFilesDrag(self):
-        
-        sys.argv = ["elasticsearch_loader.py", "--index", "sdfhstdh" , "--type", "zsdrhdg" , "json" , "michalis.json"]
+
+        sys.argv = ["elasticsearch_loader.py", "--index",
+                    "sdfhstdh", "--type", "zsdrhdg", "json", "michalis.json"]
         import importFiles_Drag_And_Drop
         importFiles_Drag_And_Drop.main()
-        
-
-        
-        
 
     def click2(self):  # create the WINDOW
 
@@ -186,26 +179,9 @@ class UI (QMainWindow):
                 if (dfQuery.count() == 0):
                     self.sorryMessage()
                 else:
-                    dfQuery.show(10)
-            else:
-                # check with stemming,. better search!
-                # We can cerate a list over here to have the data in a nice formS
-                # k = dfQuery.select(col("title")).collect()
-                # self.resultText.append(str(k))
-
-                answer = self.takeinputs(getText)
-                if answer == 'YES':
-                    print('Success')
-                    df2 = pd.DataFrame(distData.collect())
-                    print(df2)
-                    #thelw na fkalw to window!
-                    #import testPanda
-                    #testPanda.createTable()
-                    #k = distData.select(col("*")).collect()
-                    #self.resultText.append(str(k))
-                    from tempfile import NamedTemporaryFile
-                    import webbrowser
-                
+                    df3 = pd.DataFrame(dfQuery.collect())
+                    #j = dfQuery.select(col("*")).collect()
+                    # self.resultText.append(str(j))
                     base_html = """
                     <!doctype html>
                     <html><head>
@@ -226,16 +202,86 @@ class UI (QMainWindow):
 
                     def df_window(x):
                         """Open dataframe in browser window using a temporary file"""
-                        with NamedTemporaryFile(delete=False, suffix='.html',mode='w+', encoding='UTF8') as f:
+                        with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
+                            f.write(df_html(x))
+                        webbrowser.open(f.name)
+
+                    michalis2 = pd.DataFrame(df3)
+                    df_window(michalis2)
+            else:
+                # check with stemming,. better search!
+                # We can cerate a list over here to have the data in a nice formS
+                # k = dfQuery.select(col("title")).collect()
+                # self.resultText.append(str(k))
+
+                answer = self.takeinputs(getText)
+                if answer == 'YES':
+                    print('Success')
+                    df2 = pd.DataFrame(distData.collect())
+                    1  # print(df2)
+                    # thelw na fkalw to window!
+                    #import testPanda
+                    # testPanda.createTable()
+                    #k = distData.select(col("*")).collect()
+                    # self.resultText.append(str(k))
+
+                    base_html = """
+                    <!doctype html>
+                    <html><head>
+                    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+                    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+                    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+                    </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
+                        "pageLength": 50
+                    });});</script>
+                    </body></html>
+                    """
+
+                    def df_html(y):
+                        """HTML table with pagination and other goodies"""
+                        df_html = y.to_html()
+                        return base_html % df_html
+
+                    def df_window(x):
+                        """Open dataframe in browser window using a temporary file"""
+                        with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
                             f.write(df_html(x))
                         webbrowser.open(f.name)
 
                     michalis = pd.DataFrame(df2)
                     df_window(michalis)
-                  
+
                 else:
-                    j = dfQuery.select(col("*")).collect()
-                    self.resultText.append(str(j))
+                    df3 = pd.DataFrame(dfQuery.collect())
+                    #j = dfQuery.select(col("*")).collect()
+                    # self.resultText.append(str(j))
+                    base_html = """
+                    <!doctype html>
+                    <html><head>
+                    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+                    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+                    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+                    </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
+                        "pageLength": 50
+                    });});</script>
+                    </body></html>
+                    """
+
+                    def df_html(y):
+                        """HTML table with pagination and other goodies"""
+                        df_html = y.to_html()
+                        return base_html % df_html
+
+                    def df_window(x):
+                        """Open dataframe in browser window using a temporary file"""
+                        with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
+                            f.write(df_html(x))
+                        webbrowser.open(f.name)
+
+                    michalis2 = pd.DataFrame(df3)
+                    df_window(michalis2)
 
         except NotFoundError:
             print('Out of limit')
@@ -249,5 +295,4 @@ class UI (QMainWindow):
 app = QApplication(sys.argv)
 UIWindow = UI()
 app.exec_()
-#app.setQuitOnLastWindowClosed(False)
-
+# app.setQuitOnLastWindowClosed(False)
