@@ -62,20 +62,25 @@ class AppDemo(QMainWindow):
             self, "Get text", "Please provide your index Name", QLineEdit.Normal, "")
         if okPressed and text != '':
              # IndexFiles.main(self.getSelectedItem(), text)
-             print('here')
-             import sys
-             sys.argv = ["elasticsearch_loader.py", "--index", "testsdv" , "--type", "testdsvs" , "json" , "michalis.json"]
-             print(sys.argv)
+            #  print('here')
+            #  import sys
+            #  sys.argv = ["elasticsearch_loader.py", "--index", "testsdv" , "--type", "testdsvs" , "json" , "michalis.json"]
+            #  print(sys.argv)
 
-             import time
+            #  import time
              
-             script_descriptor = open("elasticsearch_loader.py")
+            #  script_descriptor = open("elasticsearch_loader.py" + " --index", "tes" , " --type", "tes" , "json" , "michalis.json")
              
-             a_script = script_descriptor.read()
-             sys.argv = ["elasticsearch_loader.py", "--index", "tes" , "--type", "tes" , "json" , "michalis.json"]
+            #  a_script = script_descriptor.read()
+            #  sys.argv = ["elasticsearch_loader.py", "--index", "tes" , "--type", "tes" , "json" , "michalis.json"]
          
-             exec(a_script)
+            #  exec(script_descriptor)
+            import runPython
+            runPython.runMain()
+            demo = AppDemo()
+            demo.show()
 
+            
 
     def getSelectedItem(self):
         item = QListWidgetItem(self.listbox_view.currentItem())

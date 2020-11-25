@@ -5,7 +5,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from pkg_resources import iter_entry_points
 from click_stream import Stream
-
+import msvcrt as m
 
 try:
     from itertools import izip_longest as zip_longest, chain

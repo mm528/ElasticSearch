@@ -37,6 +37,8 @@ from PyQt5.QtWidgets import QApplication, QTableView
 from PyQt5.QtCore import QAbstractTableModel, Qt
 from pyspark.sql import SparkSession
 Qt = QtCore.Qt
+from tempfile import NamedTemporaryFile
+import webbrowser
 import time
 answer='false'
 es = Elasticsearch("http://localhost:9200")
@@ -105,10 +107,10 @@ class UI (QMainWindow):
         sys.exit()
 
     def sendFilesDrag(self):
-
+        
+        sys.argv = ["elasticsearch_loader.py", "--index", "sdfhstdh" , "--type", "zsdrhdg" , "json" , "michalis.json"]
         import importFiles_Drag_And_Drop
         importFiles_Drag_And_Drop.main()
-
         
 
         
@@ -198,9 +200,39 @@ class UI (QMainWindow):
                     print(df2)
                     #thelw na fkalw to window!
                     #import testPanda
-                    #testPanda.pandasModel()
+                    #testPanda.createTable()
                     #k = distData.select(col("*")).collect()
                     #self.resultText.append(str(k))
+                    from tempfile import NamedTemporaryFile
+                    import webbrowser
+                
+                    base_html = """
+                    <!doctype html>
+                    <html><head>
+                    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+                    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+                    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+                    </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
+                        "pageLength": 50
+                    });});</script>
+                    </body></html>
+                    """
+
+                    def df_html(y):
+                        """HTML table with pagination and other goodies"""
+                        df_html = y.to_html()
+                        return base_html % df_html
+
+                    def df_window(x):
+                        """Open dataframe in browser window using a temporary file"""
+                        with NamedTemporaryFile(delete=False, suffix='.html',mode='w+', encoding='UTF8') as f:
+                            f.write(df_html(x))
+                        webbrowser.open(f.name)
+
+                    michalis = pd.DataFrame(df2)
+                    df_window(michalis)
+                  
                 else:
                     j = dfQuery.select(col("*")).collect()
                     self.resultText.append(str(j))
@@ -217,5 +249,5 @@ class UI (QMainWindow):
 app = QApplication(sys.argv)
 UIWindow = UI()
 app.exec_()
+#app.setQuitOnLastWindowClosed(False)
 
-sys.exit(app.exec_())

@@ -3,6 +3,10 @@ import pandas as pd
 from PyQt5.QtWidgets import QApplication, QTableView
 from PyQt5.QtCore import QAbstractTableModel, Qt
 from pyspark.sql import SparkSession
+from pandasgui import show
+from PySide2 import QtCore, QtWidgets
+from tempfile import NamedTemporaryFile
+import webbrowser
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
 spark = SparkSession.builder.appName("NetflixCsv").getOrCreate()
@@ -15,16 +19,10 @@ df = spark.read.csv(path="C:/Users/motis/Desktop/groupPython/netflix_titles.csv"
 df.cache()
 df.createOrReplaceTempView("netflix")
 
-df = pd.read_csv ('netflix_titles.csv')
+df = pd.read_csv('netflix_titles.csv')
 
 
 class pandasModel(QAbstractTableModel):
-   
-    view = QTableView()
-    view.setModel(df)
-    view.resize(800, 600)
-    view.show()
-
     def __init__(self, data):
         QAbstractTableModel.__init__(self)
         self._data = data
@@ -46,9 +44,20 @@ class pandasModel(QAbstractTableModel):
             return self._data.columns[col]
         return None
 
-def appDemo():
-   app = pandasModel()
-   app.show()
+def df_window(df):
+    with NamedTemporaryFile(delete=False, suffix='.html') as f:
+        df.to_html(f)
+        webbrowser.open(f.name)
 
+        
+df_window(df)
+
+# def createTable():
+#     model = pandasModel(df)
+#     view = QTableView()
+#     view.setModel(model)
+#     view.resize(800, 600)
+#     view.show()
+#  #
     
 
