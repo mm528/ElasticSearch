@@ -140,7 +140,8 @@ def load_plugins():
         log('info', 'loading %s' % plugin.module_name)
         plugin.resolve()(cli)
 
-if __name__ != '__main__':
 
-    load_plugins()
-    cli()
+
+load_plugins()
+cli()
+input('Press ENTER to exit') 

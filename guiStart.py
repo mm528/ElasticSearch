@@ -103,9 +103,6 @@ class UI (QMainWindow):
         sys.exit()
 
     def sendFilesDrag(self):
-
-        sys.argv = ["elasticsearch_loader.py", "--index",
-                    "sdfhstdh", "--type", "zsdrhdg", "json", "michalis.json"]
         import importFiles_Drag_And_Drop
         importFiles_Drag_And_Drop.main()
 
@@ -183,6 +180,7 @@ class UI (QMainWindow):
                     #j = dfQuery.select(col("*")).collect()
                     # self.resultText.append(str(j))
                     base_html = """
+
                     <!doctype html>
                     <html><head>
                     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -202,6 +200,7 @@ class UI (QMainWindow):
 
                     def df_window(x):
                         """Open dataframe in browser window using a temporary file"""
+                        
                         with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
                             f.write(df_html(x))
                         webbrowser.open(f.name)
@@ -295,4 +294,4 @@ class UI (QMainWindow):
 app = QApplication(sys.argv)
 UIWindow = UI()
 app.exec_()
-# app.setQuitOnLastWindowClosed(False)
+app.setQuitOnLastWindowClosed(False)
