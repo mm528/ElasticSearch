@@ -37,8 +37,8 @@ from PyQt5.QtWidgets import QApplication, QTableView
 from PyQt5.QtCore import QAbstractTableModel, Qt
 from pyspark.sql import SparkSession
 Qt = QtCore.Qt
-
-
+import time
+answer='false'
 es = Elasticsearch("http://localhost:9200")
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
@@ -108,6 +108,11 @@ class UI (QMainWindow):
 
         import importFiles_Drag_And_Drop
         importFiles_Drag_And_Drop.main()
+
+        
+
+        
+        
 
     def click2(self):  # create the WINDOW
 
@@ -182,7 +187,7 @@ class UI (QMainWindow):
                     dfQuery.show(10)
             else:
                 # check with stemming,. better search!
-                # We can cerate a list over here to have the data in a nice form
+                # We can cerate a list over here to have the data in a nice formS
                 # k = dfQuery.select(col("title")).collect()
                 # self.resultText.append(str(k))
 
@@ -209,7 +214,8 @@ class UI (QMainWindow):
         # os.system('C:/Users/motis/Desktop/groupPython/SearchIndex.py')
 
 
-app = QApplication(sys.argv).instance()
+app = QApplication(sys.argv)
 UIWindow = UI()
 app.exec_()
+
 sys.exit(app.exec_())
