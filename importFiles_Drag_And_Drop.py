@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import sys
 import os
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QInputDialog, QLineEdit
@@ -7,11 +9,12 @@ import time
 import os
 import sys
 globalText = ''
-
+x=''
 
 class ListBoxWidget(QListWidget):
 
     def __init__(self, parent=None):
+        
         super().__init__(parent)
         self.setAcceptDrops(True)
         self.resize(300, 300)
@@ -94,7 +97,8 @@ class AppDemo(QMainWindow):
                         #print(letters_only)
                         with open(text + ".json", "w") as outfile:
                             outfile.write(json_from_csv)
-               
+
+                        
                
               
             
@@ -113,6 +117,7 @@ class AppDemo(QMainWindow):
                 except TimeoutError:
                     print('run out')
                     import runPython
+                   
 
 
 
@@ -171,5 +176,3 @@ class AppDemo(QMainWindow):
 def main():
     demo = AppDemo()
     demo.show()
-   
-

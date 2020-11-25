@@ -144,4 +144,3 @@ def load_plugins():
 
 load_plugins()
 cli()
-input('Press ENTER to exit') 
