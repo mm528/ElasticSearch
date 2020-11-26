@@ -104,7 +104,8 @@ class AppDemo(QMainWindow):
             
                ####################################################################################################################
                 
-                print(sys.argv)     
+                print(sys.argv) 
+                input("Enter")    
                 try:
                     # time.sleep(10)
                     # script_descriptor = open("elasticsearch_loader.py")
@@ -115,7 +116,7 @@ class AppDemo(QMainWindow):
                     import runPython
                     
                 except TimeoutError:
-                    print('run out')
+                   
                     import runPython
                    
 

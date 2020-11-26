@@ -96,17 +96,18 @@ class UI (QMainWindow):
     # Beggining of the elastic search (first apprach with button - probly needs to be deleted)
 
     @pyqtSlot()
-    def on_click(self):
+    def on_click(self): 
         self.label.setText('Connect with Elastic SEARCH! Print results')
-        print('Connect with Elastic SEARCH! Print results')
+        print('Connect with EΥlastic SEARCH! Print results')
         print('Test git guys iam here e!')
 
     def clickExit(self):
         sys.exit()
 
     def sendFilesDrag(self):
-        import importFiles_Drag_And_Drop
-        importFiles_Drag_And_Drop.main()
+        #import importFiles_Drag_And_Drop
+        #importFiles_Drag_And_Drop.main()
+        import browserFile
 
     def click2(self):  # create the WINDOW
 
@@ -295,5 +296,6 @@ class UI (QMainWindow):
 
 app = QApplication(sys.argv)
 UIWindow = UI()
+
 app.exec_()
 app.setQuitOnLastWindowClosed(False)

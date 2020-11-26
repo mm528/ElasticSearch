@@ -111,7 +111,7 @@ class Ui_Form(object):
                     print("welcome ")
                     Form.hide()
                     import guiStart
-
+                    
                     
                 else:
                     pass
