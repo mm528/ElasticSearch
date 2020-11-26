@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+from logging import exception
 import time
 import webbrowser
 from tempfile import NamedTemporaryFile
@@ -42,7 +43,9 @@ from PyQt5.QtWidgets import QApplication, QTableView
 from PyQt5.QtCore import QAbstractTableModel, Qt
 from pyspark.sql import SparkSession
 Qt = QtCore.Qt
-answer = 'false'
+
+valuesBox = []
+getAnswer= True
 es = Elasticsearch("http://localhost:9200")
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
@@ -57,19 +60,19 @@ df.cache()
 df.createOrReplaceTempView("netflix")
 # dfTEST = pd.read_csv('netflix_titles.csv')
 
-checkValuesGense = pd.read_csv('C:/Users/motis/Desktop/finallyProject/ElasticSearch/rawText.csv')
-print(checkValuesGense)
 
 class UI (QMainWindow):
+    
 
     def __init__(self):
         super(UI, self).__init__()
-        
+
         """
         Here we are creating the GUI (Button, Text)
 
         """
-        uic.loadUi("C:/Users/motis/Desktop/finallyProject/ElasticSearch/guiTest.ui", self)
+        uic.loadUi(
+            "C:/Users/motis/Desktop/finallyProject/ElasticSearch/guiTest.ui", self)
         self.label = self.findChild(QLabel, "label")
         self.button2 = self.findChild(QPushButton, "pushButton_login")
         self.text = self.findChild(QTextEdit, "textEditLeft")
@@ -98,7 +101,7 @@ class UI (QMainWindow):
     # Beggining of the elastic search (first apprach with button - probly needs to be deleted)
 
     @pyqtSlot()
-    def on_click(self): 
+    def on_click(self):
         self.label.setText('Connect with Elastic SEARCH! Print results')
         print('Connect with EΥlastic SEARCH! Print results')
         print('Test git guys iam here e!')
@@ -108,7 +111,7 @@ class UI (QMainWindow):
 
     def sendFilesDrag(self):
         #import importFiles_Drag_And_Drop
-        #importFiles_Drag_And_Drop.main()
+        # importFiles_Drag_And_Drop.main()
         import browserFile
 
     def click2(self):  # create the WINDOW
@@ -158,13 +161,70 @@ class UI (QMainWindow):
         # Focusing over here! we are collecting the data and do some processing
 
     def clickSearch(self):
+        getoutLoop = True
+        getAnswer=True
         porter = PorterStemmer()
         lancaster = LancasterStemmer()
-
         getText = self.textSearch.toPlainText()
+        
+        # valuesBox.append(getText)
+        print(len(valuesBox))
+        if len(valuesBox) != 0:
+            saveword = getText
+            for i in range(len(valuesBox)):
+                print(valuesBox)
+                if len(valuesBox) == 0:
+                    valuesBox.append(getText)
+                    self.textTopRight.append(getText)
 
-        print(getText)
-        self.textTopRight.append(getText)
+                else:
+                    if valuesBox[i] == getText:
+                        print('We have already search with this value')
+                        getAnswer = False
+                        f = pd.read_csv(
+                            r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+getText + '.csv')
+                        base_html = """
+                    `   <!doctype html>
+                        <html><head>
+                        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+                        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+                        <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+                        </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
+                            "pageLength": 50
+                        });});</script>
+                        </body></html>
+                        """
+
+                        def df_html(y):
+                            """HTML table with pagination and other goodies"""
+                            df_html = y.to_html()
+                            return base_html % df_html
+
+                        def df_window(x):
+                            """Open dataframe in browser window using a temporary file"""
+                            with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
+                                f.write(df_html(x))
+                            webbrowser.open(f.name)
+
+                        michalis = pd.DataFrame(f)
+                        df_window(michalis)
+
+                        print(f)
+                        print('SUCESS')
+                        getoutLoop = False
+                       
+                    else:
+                        print('Not inside the list >>> ADD TO THE LIST')
+                        valuesBox.append(getText)
+                        self.textTopRight.append(getText)   
+                   
+        else:
+            saveword = getText
+            print('the list is empty')
+            valuesBox.append(getText)
+            self.textTopRight.append(getText)
+           
 
         try:
 
@@ -176,7 +236,6 @@ class UI (QMainWindow):
             distData = spark.sql("Select * from netflix where title like" + "'% " + getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% " + getText + "%' or cast like" + "'% " + getText + "%' or country like" + "'%" + getText + "%'   or date_added like" +
                                  "'% " + getText + "%'  or release_year like" + "'% " + getText + "%'  or rating like" + "'% " + getText + "%'  or duration like" + "'% " + getText + "%'   or listed_in like" + "'% " + getText + "%' or description like" + "'% " + getText + "%' order by type")
 
-            print(getText)
             if (dfQuery.count() >= distData.count()):
                 if (dfQuery.count() == 0):
                     self.sorryMessage()
@@ -205,7 +264,7 @@ class UI (QMainWindow):
 
                     def df_window(x):
                         """Open dataframe in browser window using a temporary file"""
-                        
+
                         with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
                             f.write(df_html(x))
                         webbrowser.open(f.name)
@@ -213,95 +272,47 @@ class UI (QMainWindow):
                     michalis2 = pd.DataFrame(df3)
                     df_window(michalis2)
             else:
-                # check with stemming,. better search!
-                # We can cerate a list over here to have the data in a nice formS
-                # k = dfQuery.select(col("title")).collect()
-                # self.resultText.append(str(k))
+                if getAnswer == True:
+                    answer = self.takeinputs(getText)
+                    if answer == 'YES':
+                        print('Success')
+                        df2 = pd.DataFrame(distData.collect())
+                        df2.to_csv(
+                            r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
 
-                answer = self.takeinputs(getText)
-                if answer == 'YES':
-                    print('Success')
-                    # checkValuesGense.drop('id', axis=1, inplace=True)
-                    # checkValuesGense.loc[checkValuesGense['text'] == getText]
-                    
+                        base_html = """
+                        <!doctype html>
+                        <html><head>
+                        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+                        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+                        <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+                        </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
+                            "pageLength": 50
+                        });});</script>
+                        </body></html>
+                        """
 
+                        def df_html(y):
+                            """HTML table with pagination and other goodies"""
+                            df_html = y.to_html()
+                            return base_html % df_html
 
+                        def df_window(x):
+                            """Open dataframe in browser window using a temporary file"""
+                            with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
+                                f.write(df_html(x))
+                            webbrowser.open(f.name)
 
-
-
-                    df2 = pd.DataFrame(distData.collect())
-                     # print(df2)
-                    # thelw na fkalw to window!
-                    #import testPanda
-                    # testPanda.createTable()
-                    #k = distData.select(col("*")).collect()
-                    # self.resultText.append(str(k))
-
-                    base_html = """
-                    <!doctype html>
-                    <html><head>
-                    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-                    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-                    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
-                    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-                    </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
-                        "pageLength": 50
-                    });});</script>
-                    </body></html>
-                    """
-
-                    def df_html(y):
-                        """HTML table with pagination and other goodies"""
-                        df_html = y.to_html()
-                        return base_html % df_html
-
-                    def df_window(x):
-                        """Open dataframe in browser window using a temporary file"""
-                        with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
-                            f.write(df_html(x))
-                        webbrowser.open(f.name)
-
-                    michalis = pd.DataFrame(df2)
-                    df_window(michalis)
-
+                        michalis = pd.DataFrame(df2)
+                        df_window(michalis)
+                    else:
+                        pass
                 else:
-                    df3 = pd.DataFrame(dfQuery.collect())
-                    #j = dfQuery.select(col("*")).collect()
-                    # self.resultText.append(str(j))
-                    base_html = """
-                    <!doctype html>
-                    <html><head>
-                    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-                    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-                    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
-                    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-                    </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
-                        "pageLength": 50
-                    });});</script>
-                    </body></html>
-                    """
-
-                    def df_html(y):
-                        """HTML table with pagination and other goodies"""
-                        df_html = y.to_html()
-                        return base_html % df_html
-
-                    def df_window(x):
-                        """Open dataframe in browser window using a temporary file"""
-                        with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
-                            f.write(df_html(x))
-                        webbrowser.open(f.name)
-
-                    michalis2 = pd.DataFrame(df3)
-                    df_window(michalis2)
+                    print('Here')
 
         except NotFoundError:
             print('Out of limit')
-
-            # s = Search(using=client, index="cities") \
-            # .query("match", _source="London")
-
-        # os.system('C:/Users/motis/Desktop/groupPython/SearchIndex.py')
 
 
 app = QApplication(sys.argv)
