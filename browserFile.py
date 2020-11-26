@@ -84,12 +84,14 @@ class DialogApp(QWidget):
                 try:
                     msg = QMessageBox()
                     msg.setWindowTitle("Will exit the system")
-                    import runPython
+                    import browserFile
+                    import importlib
+                    importlib.reload(runPython)
+
                    
                 except TimeoutError:
                     print('run out')
                     import runPython                
-
 
 
 demo = DialogApp()
