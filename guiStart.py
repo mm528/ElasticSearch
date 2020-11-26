@@ -47,7 +47,7 @@ es = Elasticsearch("http://localhost:9200")
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
 spark = SparkSession.builder.appName("NetflixCsv").getOrCreate()
-df = spark.read.csv(path="C:/Users/motis/Desktop/groupPython/netflix_titles.csv",
+df = spark.read.csv(path="C:/Users/motis/Desktop/finallyProject/ElasticSearch/netflix_titles.csv",
                     sep=",",
                     header=True,
                     quote='"',
@@ -55,19 +55,21 @@ df = spark.read.csv(path="C:/Users/motis/Desktop/groupPython/netflix_titles.csv"
                     )
 df.cache()
 df.createOrReplaceTempView("netflix")
-dfTEST = pd.read_csv('netflix_titles.csv')
+# dfTEST = pd.read_csv('netflix_titles.csv')
 
+checkValuesGense = pd.read_csv('C:/Users/motis/Desktop/finallyProject/ElasticSearch/rawText.csv')
+print(checkValuesGense)
 
 class UI (QMainWindow):
 
     def __init__(self):
         super(UI, self).__init__()
-
+        
         """
         Here we are creating the GUI (Button, Text)
 
         """
-        uic.loadUi("C:/Users/motis/Desktop/groupPython/guiTest.ui", self)
+        uic.loadUi("C:/Users/motis/Desktop/finallyProject/ElasticSearch/guiTest.ui", self)
         self.label = self.findChild(QLabel, "label")
         self.button2 = self.findChild(QPushButton, "pushButton_login")
         self.text = self.findChild(QTextEdit, "textEditLeft")
@@ -219,8 +221,16 @@ class UI (QMainWindow):
                 answer = self.takeinputs(getText)
                 if answer == 'YES':
                     print('Success')
+                    # checkValuesGense.drop('id', axis=1, inplace=True)
+                    # checkValuesGense.loc[checkValuesGense['text'] == getText]
+                    
+
+
+
+
+
                     df2 = pd.DataFrame(distData.collect())
-                    1  # print(df2)
+                     # print(df2)
                     # thelw na fkalw to window!
                     #import testPanda
                     # testPanda.createTable()
