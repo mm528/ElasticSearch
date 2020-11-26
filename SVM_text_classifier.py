@@ -5,35 +5,23 @@ from random import randint
 import pandas as pd
 import string
 import chardet
-with open('netflix.csv', 'rb') as f:
+with open('data_for_spam.csv', 'rb') as f:
     result = chardet.detect(f.read())  # or readline if the file is large
 
-dataset=pd.read_csv('netflix.csv', encoding=result['encoding'])
+dataset=pd.read_csv('data_for_spam.csv', encoding=result['encoding'])
 x=dataset.iloc[:,0]
 y=dataset.iloc[:,1]
 x=x.to_dict()
 
 X=[]
-corpus = []
-# ps = PorterStemmer()
-
-# for i in range(0, df.shape[0]):
-#     dialog = re.sub(pattern='[^a-zA-Z]', repl=' ', string=str(df['fullplot'][i])) # Cleaning special character from the dialog/script
-#     dialog = dialog.lower() # Converting the entire dialog/script into lower case
-#     words = dialog.split() # Tokenizing the dialog/script by words
-#     dialog_words = [word for word in words if word not in set(stopwords.words('english'))] # Removing the stop words
-#     words = [ps.stem(word) for word in dialog_words] # Stemming the words
-#     dialog = ' '.join(words) # Joining the stemmed words
-#     corpus.append(dialog) # Creating a corpus
-
 for d in range(len(x)):
     
     b=x[d].lower()
-    sentence=  re.sub(pattern='[^a-zA-Z]', repl=' ', string=b)
+    sentence= re.sub(r'\d+','', b)
     sentence= re.sub('['+string.punctuation+']', '', sentence)
     X.append(sentence)
    
-print(X)
+
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 count_vect=CountVectorizer()
 a=count_vect.fit_transform(X)
