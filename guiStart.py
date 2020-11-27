@@ -133,8 +133,7 @@ class UI (QMainWindow):
             client = Elasticsearch()
             res = es.search(index="movies", body={})
             sample = res['hits']['hits']
-            for hit in sample:
-                print()
+         
 
             s = Search(using=client, index="movies")
             #print(s)
@@ -146,7 +145,7 @@ class UI (QMainWindow):
             allTogether = ''
             
             for hit in response.hits.hits:
-                allTogether = allTogether + "\n" + hit._source.title + " ----> By" + hit._source.director
+                allTogether = allTogether + "\n" + hit._source.title + " ----> By" + hit._source.cast
                 print('FROM FILE 1 >>>>')
             self.textOut.setText(allTogether)
             
@@ -163,7 +162,7 @@ class UI (QMainWindow):
             response = s.execute()
             allTogether = ''
             for hit in response.hits.hits:
-                allTogether = allTogether + "\n" + hit._source.title + "->>> By " + hit._source.director
+                allTogether = allTogether + "\n" + hit._source.title + "->>> By " + hit._source.country
                 print('FROM FILE 2 >>>>')
             self.textOut.setText(allTogether)
         except NotFoundError:
