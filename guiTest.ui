@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>729</width>
-    <height>579</height>
+    <height>841</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -111,6 +111,29 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>Add Files to Elastic Search</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_elastic">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>580</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Elastic</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_elastic">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>540</y>
+      <width>461</width>
+      <height>141</height>
+     </rect>
     </property>
    </widget>
   </widget>
