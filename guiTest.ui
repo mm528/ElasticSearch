@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>729</width>
+    <width>757</width>
     <height>841</height>
    </rect>
   </property>
@@ -136,13 +136,35 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
    </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>-40</x>
+      <y>10</y>
+      <width>791</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>691</width>
+      <height>191</height>
+     </size>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>ucy (1)-min.jpg</pixmap>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>729</width>
+     <width>757</width>
      <height>26</height>
     </rect>
    </property>

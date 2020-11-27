@@ -4,6 +4,7 @@ from newuser import  *
 from PyQt5 import QtWidgets
 import sqlite3
 import newuser
+import time
 
 ############################################### LOGIN PAGE #######################################################3
 class Ui_Form(object):
@@ -111,7 +112,9 @@ class Ui_Form(object):
                 if username in x[0] and password in x[1]:
                     print("welcome ")
                     Form.hide()
-                    import guiStart
+                    import welcomeScreen
+                 
+                    
                     
                     
                 else:
