@@ -3,6 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from newuser import  *
 from PyQt5 import QtWidgets
 import sqlite3
+import newuser
 
 
 class Ui_Form(object):
