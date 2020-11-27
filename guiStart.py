@@ -169,14 +169,14 @@ class UI (QMainWindow):
         lancaster = LancasterStemmer()
         getText = self.textSearch.toPlainText()
         getText = getText.lower()
-        listWords2=getText.split(" ")
-        listnumber= len(listWords2)
-        sumwords=''
-        for x in listWords2:
-            sumwords = sumwords + " % "+ x
-        print(sumwords)
-        getText = sumwords
-        valuesBox.append(str(getText))
+        # listWords2=getText.split(" ")
+        # listnumber= len(listWords2)
+        # sumwords=''
+        # for x in listWords2:
+        #     sumwords = sumwords + "% "+ x
+        # print(sumwords)
+        # getText =
+        valuesBox.append(getText)
         print(len(valuesBox))
         if len(valuesBox) != 0:
             saveword = getText
