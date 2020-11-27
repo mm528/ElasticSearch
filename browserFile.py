@@ -55,6 +55,7 @@ class DialogApp(QWidget):
         self.setLayout(layout)
 #############################################################################################################
     def get_file(self):
+        self.textEditor.setText("")
         dialog2 = QFileDialog()
         dialog2.setFileMode(QFileDialog.AnyFile)
         dialog2.setFilter(QDir.Files)
@@ -67,7 +68,7 @@ class DialogApp(QWidget):
             
                         self.textEditor.setText(data[1:]) ## >>>> pic of the file
             except FileNotFoundError:
-                print('Cannt read')
+                print('Cannot read this file type')
                         
             
 ################################################################################################################
