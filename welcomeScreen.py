@@ -10,4 +10,4 @@ class Ui(QtWidgets.QMainWindow):
         
 
 window = Ui()
-import guiStart
+window.close

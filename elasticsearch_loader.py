@@ -100,7 +100,7 @@ def cli(ctx, **opts):
         ctx.obj['es_conn'].indices.create(index=opts['index'], body=opts['index_settings_file'].read())
 
 
-@cli.command(name='csv')
+@cli.command(name='csv')#########3 Take a csv but its better with json
 @click.argument('files', type=Stream(file_mode='rb'), nargs=-1, required=True)
 @click.option('--delimiter', default=',', type=str, help='Default ,')
 @click.pass_context
@@ -110,7 +110,7 @@ def _csv(ctx, files, delimiter):
     load(lines, ctx.obj)
 
 ############################################### JSON UPLOAD ##########################################################3
-@cli.command(name='json')
+@cli.command(name='json') #############Get our json
 @click.argument('files', type=Stream(file_mode='rb'), nargs=-1, required=True)
 @click.option('--json-lines', default=False, is_flag=True, help='Files formated as json lines')
 @click.pass_context
@@ -125,15 +125,6 @@ def _json(ctx, files, json_lines):
     load(lines, ctx.obj)
 
 
-@cli.command(name='parquet')
-@click.argument('files', type=Stream(file_mode='rb'), nargs=-1, required=True)
-@click.pass_context
-def _parquet(ctx, files):
-    if not parquet:
-        raise SystemExit("parquet module not found, please install manually")
-    lines = chain(*(parquet.DictReader(x) for x in files))
-    log('info', 'Loading into ElasticSearch')
-    load(lines, ctx.obj)
 
 
 def load_plugins():

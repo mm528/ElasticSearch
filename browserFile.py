@@ -117,7 +117,7 @@ class DialogApp(QWidget):
                 with open(""+str(globalName),'rt',encoding='UTF8')as f:
                     data = csv.reader(f,delimiter = '\t')
                     for row in data:
-                        #print(row)
+                        #print(row) #################### Cleaning CSV FILE #############################
                         delchars = ''.join(c for c in map(chr, range(256)) if not c.isalnum())
                         re.sub(r'\delchars+', '', 'skjbfaesjfbcs')
                         letters_only = re.sub("½", "", row[0])
@@ -130,7 +130,7 @@ class DialogApp(QWidget):
                     with open(text + ".json", "w") as outfile:
                         outfile.write(json_from_csv)
 
-                   
+                ############## Adding to txt file in order to read the variables for the runPython script ##########################  
                 jsonName = text+".json" 
                 print('Write to file')
                 filepassword = open(globalPath+"password.txt","a")

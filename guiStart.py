@@ -316,7 +316,7 @@ class UI (QMainWindow):
                         self.sorryMessage()
                     else:
                         df3 = pd.DataFrame(dfQuery.collect())
-                        df3.to_csv( r+''+globalPath+saveword+'.csv', index=False)
+                        df3.to_csv(r''+globalPath+saveword+'.csv', index=False)
                         #j = dfQuery.select(col("*")).collect()
                         # self.resultText.append(str(j))
                         base_html = """

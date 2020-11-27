@@ -59,7 +59,7 @@ class Ui_Form(object):
         self.btn_newuser.clicked.connect(self.btn_newuser_handler)
         self.btn_submit.clicked.connect(self.btn_login_handler)
 
-
+############################################### Styling Form #########################################################3
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
@@ -112,8 +112,8 @@ class Ui_Form(object):
                 if username in x[0] and password in x[1]:
                     print("welcome ")
                     Form.hide()
-                    import welcomeScreen
-                 
+                    import welcomeScreen ################start the program
+                    import guiStart ################start the program
                     
                     
                     
