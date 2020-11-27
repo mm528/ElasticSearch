@@ -17,8 +17,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>430</y>
+      <x>530</x>
+      <y>460</y>
       <width>121</width>
       <height>31</height>
      </rect>
@@ -30,10 +30,10 @@
    <widget class="QTextEdit" name="textEditRight">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>500</x>
       <y>310</y>
-      <width>101</width>
-      <height>121</height>
+      <width>181</width>
+      <height>151</height>
      </rect>
     </property>
    </widget>

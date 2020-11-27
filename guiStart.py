@@ -48,7 +48,6 @@ Qt = QtCore.Qt
 
 valuesBox = []
 getAnswer = True
-sumwords=''
 es = Elasticsearch("http://localhost:9200")
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
@@ -168,15 +167,9 @@ class UI (QMainWindow):
         porter = PorterStemmer()
         lancaster = LancasterStemmer()
         getText = self.textSearch.toPlainText()
-        getText = getText.lower()
-        # listWords2=getText.split(" ")
-        # listnumber= len(listWords2)
-        # sumwords=''
-        # for x in listWords2:
-        #     sumwords = sumwords + "% "+ x
-        # print(sumwords)
-        # getText =
-        valuesBox.append(getText)
+        #getText = getText.lower()
+        listWords2=getText.split(' ')
+        #valuesBox.append(getText)
         print(len(valuesBox))
         if len(valuesBox) != 0:
             saveword = getText
@@ -238,27 +231,21 @@ class UI (QMainWindow):
         try:    
             
             # Here is where sql command comes in to resolve the problem of the search (ordered by type)
-            #WHERE CONTAINS (<columnName>, '<yourSubstring>')
-            # dfQuery = spark.sql("Select * from netflix where title like " + getText) 
-            # distData = spark.sql("Select * from netflix where title contains " + getText) 
+    
+##############################################################################################################################
+            if len(listWords2) >1:
+                print('Leksis parapanw apo 1 char')
+                dfQuery = spark.sql("Select * from netflix where title RLIKE  " + "'" + getText + "'or type RLIKE "+ "'"
+                                                                                    + getText +"'or director RLIKE "+ "'" + getText +"' or cast RLIKE " + "'" +getText + "' or country RLIKE " 
+                                                                                    + "'"+getText+"' or description RLIKE "+ "'" + getText +"' or duration RLIKE " + "'" +getText + "' or rating RLIKE " + "'"+getText+"'" ) 
+                print(dfQuery.collect())   
 
-
-            dfQuery = spark.sql("Select * from netflix where title like" + "'% " + getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% " + getText + "%' or cast like" + "'% " + getText + "%' or country like" + "'%" + getText + "%'   or date_added like" +
-                                "'% " + getText + "%'  or release_year like" + "'% " + getText + "%'  or rating like" + "'% " + getText + "%'  or duration like" + "'% " + getText + "%'   or listed_in like" + "'% " + getText + "%' or description like" + "'% " + getText + "%' order by type")
-            getText = porter.stem(getText)
-            distData = spark.sql("Select * from netflix where title like" + "'% " + getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% " + getText + "%' or cast like" + "'% " + getText + "%' or country like" + "'%" + getText + "%'   or date_added like" +
-                                 "'% " + getText + "%'  or release_year like" + "'% " + getText + "%'  or rating like" + "'% " + getText + "%'  or duration like" + "'% " + getText + "%'   or listed_in like" + "'% " + getText + "%' or description like" + "'% " + getText + "%' order by type")
-
-            if (dfQuery.count() >= distData.count()):
-                if (dfQuery.count() == 0):
+                if dfQuery.count ==0:
                     self.sorryMessage()
                 else:
                     df3 = pd.DataFrame(dfQuery.collect())
-                    df3.to_csv( r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
-                    #j = dfQuery.select(col("*")).collect()
-                    # self.resultText.append(str(j))
+                    df3.to_csv( r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+getText+'.csv', index=False)
                     base_html = """
-
                     <!doctype html>
                     <html><head>
                     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -285,16 +272,28 @@ class UI (QMainWindow):
 
                     michalis2 = pd.DataFrame(df3)
                     df_window(michalis2)
-            else:
-                if getAnswer == True:
-                    answer = self.takeinputs(getText)
-                    if answer == 'YES':
-                        print('Success')
-                        df2 = pd.DataFrame(distData.collect())
-                        df2.to_csv(
-                            r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
 
+
+
+###############################################################################################################################################
+            else:
+                print('Mono 1 leksi')
+                dfQuery = spark.sql("Select * from netflix where title like" + "'% " + getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% " + getText + "%' or cast like" + "'% " + getText + "%' or country like" + "'%" + getText + "%'   or date_added like" +
+                                    "'% " + getText + "%'  or release_year like" + "'% " + getText + "%'  or rating like" + "'% " + getText + "%'  or duration like" + "'% " + getText + "%'   or listed_in like" + "'% " + getText + "%' or description like" + "'% " + getText + "%' order by type")
+                getText = porter.stem(getText)
+                distData = spark.sql("Select * from netflix where title like" + "'% " + getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% " + getText + "%' or cast like" + "'% " + getText + "%' or country like" + "'%" + getText + "%'   or date_added like" +
+                                    "'% " + getText + "%'  or release_year like" + "'% " + getText + "%'  or rating like" + "'% " + getText + "%'  or duration like" + "'% " + getText + "%'   or listed_in like" + "'% " + getText + "%' or description like" + "'% " + getText + "%' order by type")
+
+                if (dfQuery.count() >= distData.count()): 
+                    if (dfQuery.count() == 0):
+                        self.sorryMessage()
+                    else:
+                        df3 = pd.DataFrame(dfQuery.collect())
+                        df3.to_csv( r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
+                        #j = dfQuery.select(col("*")).collect()
+                        # self.resultText.append(str(j))
                         base_html = """
+
                         <!doctype html>
                         <html><head>
                         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -314,16 +313,52 @@ class UI (QMainWindow):
 
                         def df_window(x):
                             """Open dataframe in browser window using a temporary file"""
+
                             with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
                                 f.write(df_html(x))
                             webbrowser.open(f.name)
 
-                        michalis = pd.DataFrame(df2)
-                        df_window(michalis)
-                    else:
-                        pass
+                        michalis2 = pd.DataFrame(df3)
+                        df_window(michalis2)
                 else:
-                    print('out of loop')
+                    if getAnswer == True:
+                        answer = self.takeinputs(getText)
+                        if answer == 'YES':
+                            print('Success')
+                            df2 = pd.DataFrame(distData.collect())
+                            df2.to_csv(
+                                r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
+
+                            base_html = """
+                            <!doctype html>
+                            <html><head>
+                            <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+                            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+                            <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+                            </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
+                                "pageLength": 50
+                            });});</script>
+                            </body></html>
+                            """
+
+                            def df_html(y):
+                                """HTML table with pagination and other goodies"""
+                                df_html = y.to_html()
+                                return base_html % df_html
+
+                            def df_window(x):
+                                """Open dataframe in browser window using a temporary file"""
+                                with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
+                                    f.write(df_html(x))
+                                webbrowser.open(f.name)
+
+                            michalis = pd.DataFrame(df2)
+                            df_window(michalis)
+                        else:
+                            pass
+                    else:
+                        print('out of loop')
 
         except NotFoundError:
             print('Out of limit')

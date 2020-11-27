@@ -1,15 +1,40 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QFileDialog,
                              QTextEdit, QPushButton, QLabel, QVBoxLayout, QInputDialog, QLineEdit,QMessageBox)
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QCoreApplication, QDir
 from PyQt5 import QtCore
+indexName=''
+typeIndexname=''
+path=''
 
-globalName = ''
 class DialogApp(QWidget):
+    
+
+    globalName = ''
+    def setIndex(self,ndname):
+        indexName = ndname
+    def settype(self,typename):
+        typeIndexname = typename
+    def setpath(self,pathname):
+        path = pathname
+
+    
+    def getNameIndex(self):
+        return typeIndexname
+    def getPathname(self):
+        return path
+    def getIndexName(self):
+        return indexName
+    
+    
+       
+
+    
+
     def __init__(self):
+        
         super().__init__()
         self.resize(1200, 800)
 
@@ -59,13 +84,17 @@ class DialogApp(QWidget):
             if okPressed and text != '':
                 print(text+ " " + text2 + " >>>" + globalName)
                 #print(text, text2, self.getSelectedItem())
+                self.setIndex(text)
+                self.settype(text2)
                 import sys
+
 
                 #####################################################################################################################3
                 
                 import csv
                 import json
                 import re
+                filepassword = open("password.txt","w")
                 file = open(""+str(globalName), "r", encoding='UTF8') #Edw to diavazi me UTF8 (SIMANTIKO)
                 dict_reader = csv.DictReader(file)
                 dict_from_csv = list(dict_reader)
@@ -81,8 +110,14 @@ class DialogApp(QWidget):
                         letters_only = re.sub("#", "", letters_only)
                         letters_only = re.sub("NaN", "", letters_only) ###>>>> AFAIROUME OLA TA PERITTA P DEN THELOUME STO JSON!!
                         #print(letters_only)
+                        
+                       
+                     
                         with open(text + ".json", "w") as outfile:
-                            outfile.write(json_from_csv) 
+                            outfile.write(json_from_csv)
+                    jsonName = text+".json" 
+                    filepassword.write(text + " "+ text2 + " "+ jsonName)
+                    filepassword.close
                  ####################################################################################################################
                 
                 print(sys.argv)     
@@ -90,7 +125,7 @@ class DialogApp(QWidget):
                     msg = QMessageBox()
                     msg.setWindowTitle("Will exit the system")
                     import browserFile
-
+                    import runPython
                    
                 except TimeoutError:
                     print('run out')
