@@ -48,11 +48,14 @@ Qt = QtCore.Qt
 
 valuesBox = []
 getAnswer = True
+
+globalPath = os.path.dirname(__file__) + "/"
+
 es = Elasticsearch("http://localhost:9200")
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
 spark = SparkSession.builder.appName("NetflixCsv").getOrCreate()
-df = spark.read.csv(path="C:/Users/motis/Desktop/finallyProject/ElasticSearch/netflix_titles.csv",
+df = spark.read.csv(path= globalPath + "netflix_titles.csv",
                     sep=",",
                     header=True,
                     quote='"',
@@ -60,7 +63,7 @@ df = spark.read.csv(path="C:/Users/motis/Desktop/finallyProject/ElasticSearch/ne
                     )
 df.cache()
 df.createOrReplaceTempView("netflix")
-# dfTEST = pd.read_csv('netflix_titles.csv')
+
 
 
 class UI (QMainWindow):
@@ -73,7 +76,7 @@ class UI (QMainWindow):
 
         """
         uic.loadUi(
-            "C:/Users/motis/Desktop/finallyProject/ElasticSearch/guiTest.ui", self)
+            globalPath + "guiTest.ui", self)
         self.label = self.findChild(QLabel, "label")
         self.button2 = self.findChild(QPushButton, "pushButton_login")
         self.text = self.findChild(QTextEdit, "textEditLeft")
@@ -209,7 +212,7 @@ class UI (QMainWindow):
                         getAnswer = False
                         try:
                            
-                            f = pd.read_csv(r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+getText + '.csv', index=False)
+                            f = pd.read_csv(r''+globalPath +getText + '.csv')
                         except IOError:
                             self.sorryMessagenullfile()
 
@@ -272,7 +275,7 @@ class UI (QMainWindow):
                     self.sorryMessage()
                 else:
                     df3 = pd.DataFrame(dfQuery.collect())
-                    df3.to_csv( r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+getText+'.csv', index=False)
+                    df3.to_csv(r''+globalPath+getText+'.csv')
                     base_html = """
                     <!doctype html>
                     <html><head>
@@ -317,7 +320,7 @@ class UI (QMainWindow):
                         self.sorryMessage()
                     else:
                         df3 = pd.DataFrame(dfQuery.collect())
-                        df3.to_csv( r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
+                        df3.to_csv( r+''+globalPath+saveword+'.csv', index=False)
                         #j = dfQuery.select(col("*")).collect()
                         # self.resultText.append(str(j))
                         base_html = """
@@ -355,7 +358,7 @@ class UI (QMainWindow):
                             print('Success')
                             df2 = pd.DataFrame(distData.collect())
                             df2.to_csv(
-                                r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
+                                r''+globalPath+saveword+'.csv')
 
                             base_html = """
                             <!doctype html>
@@ -387,7 +390,7 @@ class UI (QMainWindow):
                             print('Clicked NO')
                             df2 = pd.DataFrame(dfQuery.collect())
                             df2.to_csv(
-                                r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
+                                r''+globalPath+saveword+'.csv', index=False)
 
                             base_html = """
                             <!doctype html>

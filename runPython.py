@@ -4,11 +4,12 @@ import sys
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QMessageBox
 import chardet
+import os
+globalPath = os.path.dirname(__file__) + "/"
 
 
 
-
-with open ("C:/Users/motis/Desktop/finallyProject/ElasticSearch/password.txt", 'rt') as myfile:
+with open (globalPath+"password.txt", 'rt') as myfile:
       for myline in myfile: 
           getAsstring = myline
           x = getAsstring.split()

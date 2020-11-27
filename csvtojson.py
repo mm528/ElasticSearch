@@ -23,13 +23,3 @@ def tojson(x):
             #print(letters_only)
             with open("michalis.json", "w") as outfile:
               outfile.write(json_from_csv)
-
-
-# dict_from_csv = list(dict_reader)
-# json_from_csv = json.dumps(dict_from_csv)
-# with open("michalis.json", "w") as outfile: 
-#     # outfile.write('[')
-#     outfile.write(json_from_csv)
-#     # outfile.write(']')
-# print(json_from_csv)
-

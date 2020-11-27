@@ -1,5 +1,6 @@
 
 import importlib
+import os
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QFileDialog,
                              QTextEdit, QPushButton, QLabel, QVBoxLayout, QInputDialog, QLineEdit,QMessageBox)
@@ -9,7 +10,7 @@ from PyQt5 import QtCore
 indexName=''
 typeIndexname=''
 path=''
-
+globalPath = os.path.dirname(__file__) + "/"
 class DialogApp(QWidget):
     
     
@@ -132,7 +133,7 @@ class DialogApp(QWidget):
                    
                 jsonName = text+".json" 
                 print('Write to file')
-                filepassword = open("C:/Users/motis/Desktop/finallyProject/ElasticSearch/password.txt","a")
+                filepassword = open(globalPath+"password.txt","a")
                 print('open file')
                 filepassword.write(text + " "+ text2 + " "+ jsonName)
                 filepassword.close
