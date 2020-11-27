@@ -105,7 +105,7 @@ class UI (QMainWindow):
     def on_click(self):
         self.label.setText('Connect with Elastic SEARCH! Print results')
         int('Connect with EΥlastic SEARCH! Print results')
-        print('Test git guys iam here e!')
+       
 
     def clickExit(self):
         sys.exit()
@@ -126,7 +126,7 @@ class UI (QMainWindow):
         self.ui.setupUi(self.window)
         self.window.show()
 
-    def click3(self):  # search from the elastic search
+    def click3(self):  # search from the elastic search fully function
         try:
             client = Elasticsearch()
             res = es.search(index="movies_netflix", body={})
@@ -158,6 +158,9 @@ class UI (QMainWindow):
     def sorryMessage(self):
         QMessageBox.about(
             self, "Error", "Iam affraid we are not having this word  \n into the Netflix data. Please try again")
+    def sorryMessagenullfile(self):
+            QMessageBox.about(
+            self, "Error", "Please try again")
 
         # Focusing over here! we are collecting the data and do some processing
 
@@ -178,13 +181,18 @@ class UI (QMainWindow):
                 if len(valuesBox) == 0:
                     valuesBox.append(getText)
                     self.textTopRight.append(getText)
-                    break
+                
 
                 else:
                     if valuesBox[i] == getText:
                         print('We have already search with this value')
                         getAnswer = False
-                        f = pd.read_csv(r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+getText + '.csv')
+                        try:
+                           
+                            f = pd.read_csv(r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+getText + '.csv')
+                        except IOError:
+                            self.sorryMessagenullfile()
+
                         base_html = """
                     `   <!doctype html>
                         <html><head>
@@ -237,7 +245,7 @@ class UI (QMainWindow):
                 print('Leksis parapanw apo 1 char')
                 dfQuery = spark.sql("Select * from netflix where title RLIKE  " + "'" + getText + "'or type RLIKE "+ "'"
                                                                                     + getText +"'or director RLIKE "+ "'" + getText +"' or cast RLIKE " + "'" +getText + "' or country RLIKE " 
-                                                                                    + "'"+getText+"' or description RLIKE "+ "'" + getText +"' or duration RLIKE " + "'" +getText + "' or rating RLIKE " + "'"+getText+"'" ) 
+                                                                                    + "'"+getText+"' or description RLIKE "+ "'" + getText +"' or duration RLIKE " + "'" +getText + "' or rating RLIKE " + "'"+getText+"'or listed_in RLIKE " + "'"+getText+"'" ) 
                 print(dfQuery.collect())   
 
                 if dfQuery.count ==0:
@@ -356,7 +364,38 @@ class UI (QMainWindow):
                             michalis = pd.DataFrame(df2)
                             df_window(michalis)
                         else:
-                            pass
+                            print('Clicked NO')
+                            df2 = pd.DataFrame(dfQuery.collect())
+                            df2.to_csv(
+                                r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+saveword+'.csv', index=False)
+
+                            base_html = """
+                            <!doctype html>
+                            <html><head>
+                            <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+                            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+                            <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+                            </head><body>%s<script type="text/javascript">$(document).ready(function(){$('table').DataTable({
+                                "pageLength": 50
+                            });});</script>
+                            </body></html>
+                            """
+
+                            def df_html(y):
+                                """HTML table with pagination and other goodies"""
+                                df_html = y.to_html()
+                                return base_html % df_html
+
+                            def df_window(x):
+                                """Open dataframe in browser window using a temporary file"""
+                                with NamedTemporaryFile(delete=False, suffix='.html', mode='w+', encoding='UTF8') as f:
+                                    f.write(df_html(x))
+                                webbrowser.open(f.name)
+
+                            michalis = pd.DataFrame(df2)
+                            df_window(michalis)
+
                     else:
                         print('out of loop')
 

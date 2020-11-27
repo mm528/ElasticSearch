@@ -1,4 +1,5 @@
 
+import importlib
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QFileDialog,
                              QTextEdit, QPushButton, QLabel, QVBoxLayout, QInputDialog, QLineEdit,QMessageBox)
@@ -10,6 +11,7 @@ typeIndexname=''
 path=''
 
 class DialogApp(QWidget):
+    
     
 
     globalName = ''
@@ -28,13 +30,18 @@ class DialogApp(QWidget):
     def getIndexName(self):
         return indexName
     
-    
+    def catchHere (self):
+        try:
+            
+            import runPython
+        except TimeoutError:
+            print('run out')
+            import runPython   
        
 
     
 
     def __init__(self):
-        
         super().__init__()
         self.resize(1200, 800)
 
@@ -71,8 +78,11 @@ class DialogApp(QWidget):
                         
             
 ################################################################################################################
-
+    
     def get_text_file(self):
+        answerhere = False
+        import time
+        
         file_name, _ = QFileDialog.getOpenFileName(self, 'Open File', r"<Default dir>", "")
         globalName = file_name
         print(file_name)
@@ -83,9 +93,11 @@ class DialogApp(QWidget):
                 self, "Get text", "Please provide your Type Name", QLineEdit.Normal, "")
             if okPressed and text != '':
                 print(text+ " " + text2 + " >>>" + globalName)
+               
                 #print(text, text2, self.getSelectedItem())
                 self.setIndex(text)
                 self.settype(text2)
+                time.sleep(3)
                 import sys
 
 
@@ -94,15 +106,16 @@ class DialogApp(QWidget):
                 import csv
                 import json
                 import re
-                filepassword = open("password.txt","w")
+                
                 file = open(""+str(globalName), "r", encoding='UTF8') #Edw to diavazi me UTF8 (SIMANTIKO)
+                print('Opening file csv')
                 dict_reader = csv.DictReader(file)
                 dict_from_csv = list(dict_reader)
                 json_from_csv = json.dumps(dict_from_csv)        
                 with open(""+str(globalName),'rt',encoding='UTF8')as f:
                     data = csv.reader(f,delimiter = '\t')
                     for row in data:
-                        print(row)
+                        #print(row)
                         delchars = ''.join(c for c in map(chr, range(256)) if not c.isalnum())
                         re.sub(r'\delchars+', '', 'skjbfaesjfbcs')
                         letters_only = re.sub("½", "", row[0])
@@ -110,27 +123,26 @@ class DialogApp(QWidget):
                         letters_only = re.sub("#", "", letters_only)
                         letters_only = re.sub("NaN", "", letters_only) ###>>>> AFAIROUME OLA TA PERITTA P DEN THELOUME STO JSON!!
                         #print(letters_only)
-                        
-                       
+                
                      
-                        with open(text + ".json", "w") as outfile:
-                            outfile.write(json_from_csv)
-                    jsonName = text+".json" 
-                    filepassword.write(text + " "+ text2 + " "+ jsonName)
-                    filepassword.close
+                    with open(text + ".json", "w") as outfile:
+                        outfile.write(json_from_csv)
+
+                   
+                jsonName = text+".json" 
+                print('Write to file')
+                filepassword = open("C:/Users/motis/Desktop/finallyProject/ElasticSearch/password.txt","a")
+                print('open file')
+                filepassword.write(text + " "+ text2 + " "+ jsonName)
+                filepassword.close
+                
+                self.catchHere()
+             
                  ####################################################################################################################
                 
-                print(sys.argv)     
-                try:
-                    msg = QMessageBox()
-                    msg.setWindowTitle("Will exit the system")
-                    import browserFile
-                    import runPython
-                   
-                except TimeoutError:
-                    print('run out')
-                    import runPython                
+        
 
+       
 
 demo = DialogApp()
 demo.show()
