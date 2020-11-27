@@ -48,6 +48,7 @@ Qt = QtCore.Qt
 
 valuesBox = []
 getAnswer = True
+sumwords=''
 es = Elasticsearch("http://localhost:9200")
 spark = SparkSession.builder.master("local[*]").appName('cluster').config("spark.io.compression.codec",
                                                                           "org.apache.spark.io.LZ4CompressionCodec").config("spark.sql.parquet.compression.codec", "uncompressed").getOrCreate()
@@ -168,7 +169,14 @@ class UI (QMainWindow):
         lancaster = LancasterStemmer()
         getText = self.textSearch.toPlainText()
         getText = getText.lower()
-        # valuesBox.append(getText)
+        listWords2=getText.split(" ")
+        listnumber= len(listWords2)
+        sumwords=''
+        for x in listWords2:
+            sumwords = sumwords + " % "+ x
+        print(sumwords)
+        getText = sumwords
+        valuesBox.append(str(getText))
         print(len(valuesBox))
         if len(valuesBox) != 0:
             saveword = getText
@@ -227,9 +235,13 @@ class UI (QMainWindow):
             valuesBox.append(getText)
             self.textTopRight.append(getText)
 
-        try:
-
+        try:    
+            
             # Here is where sql command comes in to resolve the problem of the search (ordered by type)
+            #WHERE CONTAINS (<columnName>, '<yourSubstring>')
+            # dfQuery = spark.sql("Select * from netflix where title like " + getText) 
+            # distData = spark.sql("Select * from netflix where title contains " + getText) 
+
 
             dfQuery = spark.sql("Select * from netflix where title like" + "'% " + getText + "%' or  type like" + "'% " + getText + "%' or director like" + "'% " + getText + "%' or cast like" + "'% " + getText + "%' or country like" + "'%" + getText + "%'   or date_added like" +
                                 "'% " + getText + "%'  or release_year like" + "'% " + getText + "%'  or rating like" + "'% " + getText + "%'  or duration like" + "'% " + getText + "%'   or listed_in like" + "'% " + getText + "%' or description like" + "'% " + getText + "%' order by type")

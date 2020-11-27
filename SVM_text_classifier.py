@@ -1,11 +1,13 @@
 # use natural language toolkit
+
 import re
 import numpy as np 
 from random import randint
 import pandas as pd
 import string
 import chardet
-with open('data_for_spam.csv', 'rb') as f:
+#C:\Users\motis\Desktop\finallyProject\ElasticSearch\MovieGenre_cleaned.csv
+with open('MovieGenre_cleaned.csv', 'rb') as f:
     result = chardet.detect(f.read())  # or readline if the file is large
 
 dataset=pd.read_csv('data_for_spam.csv', encoding=result['encoding'])

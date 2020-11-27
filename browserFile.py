@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QFileDialog,
                              QTextEdit, QPushButton, QLabel, QVBoxLayout, QInputDialog, QLineEdit,QMessageBox)
@@ -9,7 +11,7 @@ globalName = ''
 class DialogApp(QWidget):
     def __init__(self):
         super().__init__()
-        self.resize(800, 600)
+        self.resize(1200, 800)
 
         self.button1 = QPushButton('Have a pic look on your file')
         self.button1.clicked.connect(self.get_file)
@@ -33,11 +35,14 @@ class DialogApp(QWidget):
         dialog2.setFilter(QDir.Files)
         if dialog2.exec_():
             file_name = dialog2.selectedFiles()
-            if file_name[0].endswith('.csv'):
-                with open(file_name[0], 'r') as f:
-                    data= f.read()
-        
-                    self.textEditor.setText(data[1:]) ## >>>> pic of the file
+            try:
+                if file_name[0].endswith('.csv'):
+                    with open(file_name[0], 'r') as f:
+                        data= f.read()
+            
+                        self.textEditor.setText(data[1:]) ## >>>> pic of the file
+            except FileNotFoundError:
+                print('Cannt read')
                         
             
 ################################################################################################################
@@ -85,8 +90,6 @@ class DialogApp(QWidget):
                     msg = QMessageBox()
                     msg.setWindowTitle("Will exit the system")
                     import browserFile
-                    import importlib
-                    importlib.reload(runPython)
 
                    
                 except TimeoutError:
