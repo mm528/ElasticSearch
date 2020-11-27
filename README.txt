@@ -32,8 +32,8 @@ pip install sqlparse
 	python login.py
 4.Login as user "mm" and password 1234
 
+For Elastic Search to work you must import the two datasets into the elastic database
+netflix_titles.csv with:
+	inxdex name:movies 
+	type name:movies
 Enjoy!
-If any questions or queries please you will find us:
-mpalec01@cs.ucy.ac.cy
-mmotis01@ucy.ac.cy
-fpikri01@ucy.ac.cy
