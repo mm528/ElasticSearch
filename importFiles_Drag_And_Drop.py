@@ -10,7 +10,8 @@ import os
 import sys
 globalText = ''
 x=''
-
+######################################## DRAG AND DROP UPLOAD FILE #######################################################
+######################################## FULLY FUNCTION BUT WE PREFER THE ORIGINAL FILE ###################################3
 class ListBoxWidget(QListWidget):
 
     def __init__(self, parent=None):

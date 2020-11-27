@@ -4,7 +4,7 @@ from login import *
 import sqlite3
 from PyQt5 import QtWidgets
 
-
+################################################ NEW USER #############################################################
 class Ui_Newuser(object):
 
     def openwindow(self):
@@ -118,6 +118,8 @@ class Ui_Newuser(object):
             txt_emailid_v=self.txt_emailid.text()
             txt_username_v=self.txt_username.text()
             txt_password_v=self.txt_password.text()
+
+#############################################CREATE USER DB ADDING TABLE ##########################################################
 
             conn=sqlite3.connect('user.db')
             cursor = conn.cursor()

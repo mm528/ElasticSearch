@@ -67,8 +67,8 @@ df.createOrReplaceTempView("netflix")
 
 
 class UI (QMainWindow):
-
-    def __init__(self):
+##########################################################################################################################
+    def __init__(self):############################Creating Winfow ########################################################
         super(UI, self).__init__()
 
         """
@@ -103,15 +103,11 @@ class UI (QMainWindow):
         self.sendFiles.clicked.connect(self.sendFilesDrag)
         self.button4.clicked.connect(self.click3)
         self.show()
-
+#########################################################################################################################333
     # Beggining of the elastic search (first apprach with button - probly needs to be deleted)
 
     @pyqtSlot()
-    def on_click(self):
-        self.label.setText('Connect with Elastic SEARCH! Print results')
-        int('Connect with EΥlastic SEARCH! Print results')
-       
-
+   
     def clickExit(self):
         sys.exit()
 
@@ -130,9 +126,9 @@ class UI (QMainWindow):
         self.ui = login.Ui_Form()
         self.ui.setupUi(self.window)
         self.window.show()
-
-    def click3(self):  # search from the elastic search fully function
-        try:
+##########################################################################################################################3
+    def click3(self):                          ### -   ELASTIC SEARCH
+        try:                         # search from the elastic search fully function 
             client = Elasticsearch()
             res = es.search(index="movies", body={})
             sample = res['hits']['hits']
@@ -186,7 +182,7 @@ class UI (QMainWindow):
             self, "Error", "Please try again")
 
         # Focusing over here! we are collecting the data and do some processing
-
+################################################### SEARCH BUTTON #####################################################################3
     def clickSearch(self):
         getoutLoop = True
         getAnswer = True

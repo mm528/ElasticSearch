@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMessageBox
 import chardet
 import os
 globalPath = os.path.dirname(__file__) + "/"
-
+################################################ RUN ELASTIC LOADER SCRIPT ############################################
 
 
 with open (globalPath+"password.txt", 'rt') as myfile:

@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets
 import sqlite3
 import newuser
 
-
+############################################### LOGIN PAGE #######################################################3
 class Ui_Form(object):
 
     def openwindow(self):

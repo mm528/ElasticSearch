@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+######################################### UPLOAD JSON TO ELASTIC SEARCH ##################################################
 from elasticsearch import helpers
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
@@ -108,7 +109,7 @@ def _csv(ctx, files, delimiter):
     log('info', 'Loading into ElasticSearch')
     load(lines, ctx.obj)
 
-
+############################################### JSON UPLOAD ##########################################################3
 @cli.command(name='json')
 @click.argument('files', type=Stream(file_mode='rb'), nargs=-1, required=True)
 @click.option('--json-lines', default=False, is_flag=True, help='Files formated as json lines')
