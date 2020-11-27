@@ -82,6 +82,8 @@ class UI (QMainWindow):
         self.buttonExit = self.findChild(QPushButton, "pushButton_exit")
         self.sendFiles = self.findChild(QPushButton, "pushButton_SendFiles")
         self.table = self.findChild(QTableView, "tableView_results")
+        self.button4 = self.findChild(QPushButton, "pushButton_elastic")
+        self.textOut = self.findChild(QTextEdit, "textEdit_elastic")
         self.resultText = self.findChild(
             QTextEdit, "textEdit_Results_From_Elastic")
 
@@ -96,7 +98,7 @@ class UI (QMainWindow):
         self.searchButton.clicked.connect(self.clickSearch)
         self.buttonExit.clicked.connect(self.clickExit)
         self.sendFiles.clicked.connect(self.sendFilesDrag)
-
+        self.button4.clicked.connect(self.click3)
         self.show()
 
     # Beggining of the elastic search (first apprach with button - probly needs to be deleted)
@@ -129,22 +131,41 @@ class UI (QMainWindow):
     def click3(self):  # search from the elastic search fully function
         try:
             client = Elasticsearch()
-            res = es.search(index="movies_netflix", body={})
+            res = es.search(index="movies", body={})
             sample = res['hits']['hits']
             for hit in sample:
-                print(hit)
+                print()
 
-            s = Search(using=client, index="movies_netflix")
-            print(s)
-            q = Q('match_all')
+            s = Search(using=client, index="movies")
+            #print(s)
+            getText = self.textSearch.toPlainText()
+            q = Q('match', title=getText)
+            s = s.query(q)
+            s = s.highlight('text', fragment_size=20)
+            response = s.execute()
+            allTogether = ''
+            
+            for hit in response.hits.hits:
+                allTogether = allTogether + "\n" + hit._source.title + " ----> By" + hit._source.director
+                print('FROM FILE 1 >>>>')
+            self.textOut.setText(allTogether)
+            
+            res = es.search(index="imdb", body={})
+            sample = res['hits']['hits']
+            
+
+            s = Search(using=client, index="imdb")
+            print('From FILE 2 ->>>>')
+            getText = self.textSearch.toPlainText()
+            q = Q('match', title=getText)
             s = s.query(q)
             s = s.highlight('text', fragment_size=20)
             response = s.execute()
             allTogether = ''
             for hit in response.hits.hits:
-                allTogether = allTogether + "\n" + hit._source.director
-                print(hit._source.director)
-            self.labelSearchResults.setText(allTogether)
+                allTogether = allTogether + "\n" + hit._source.title + "->>> By " + hit._source.director
+                print('FROM FILE 2 >>>>')
+            self.textOut.setText(allTogether)
         except NotFoundError:
             print('error not found')
 
@@ -189,7 +210,7 @@ class UI (QMainWindow):
                         getAnswer = False
                         try:
                            
-                            f = pd.read_csv(r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+getText + '.csv')
+                            f = pd.read_csv(r'C:/Users/motis/Desktop/finallyProject/ElasticSearch/'+getText + '.csv', index=False)
                         except IOError:
                             self.sorryMessagenullfile()
 
@@ -242,13 +263,13 @@ class UI (QMainWindow):
     
 ##############################################################################################################################
             if len(listWords2) >1:
-                print('Leksis parapanw apo 1 char')
+                print('Leksis parapanw apo 1 character')
                 dfQuery = spark.sql("Select * from netflix where title RLIKE  " + "'" + getText + "'or type RLIKE "+ "'"
                                                                                     + getText +"'or director RLIKE "+ "'" + getText +"' or cast RLIKE " + "'" +getText + "' or country RLIKE " 
                                                                                     + "'"+getText+"' or description RLIKE "+ "'" + getText +"' or duration RLIKE " + "'" +getText + "' or rating RLIKE " + "'"+getText+"'or listed_in RLIKE " + "'"+getText+"'" ) 
                 print(dfQuery.collect())   
 
-                if dfQuery.count ==0:
+                if len(dfQuery.collect()) == 0:
                     self.sorryMessage()
                 else:
                     df3 = pd.DataFrame(dfQuery.collect())
